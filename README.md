@@ -10,7 +10,7 @@ With *cleanup*, you have:
 
 * Empty lines compactation (optional, configurable)
 * Remotion of trailing spaces
-* Normalization of line endings (Win, Unix, or Mac)
+* Normalization of line endings (Windows, Unix, or Mac)
 * Source Map support
 
 **Why not Uglify?**
