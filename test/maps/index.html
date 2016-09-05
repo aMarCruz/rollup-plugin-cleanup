@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>SourceMap test</title>
+    <style>
+      body {font-face:sans-serif;}
+    </style>
+  </head>
+  <body>
+    <h2>SourceMap test</h2>
+    <p>Please trace the code with the browser's debugger.</p>
+    <p>Output:</p>
+    <pre id="out"></p>
+
+    <script src="bundle.js"></script>
+    <script>
+      // you will see the source with the original comments
+      debugger
+      var code = myapp().run()
+
+      document.getElementById('out').innerHTML = code
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    </script>
+  </body>
+</html>
