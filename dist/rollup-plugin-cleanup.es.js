@@ -1,10 +1,6 @@
-'use strict';
-
-function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
-
-var MagicString = _interopDefault(require('magic-string'));
-var rollupPluginutils = require('rollup-pluginutils');
-var path = require('path');
+import MagicString from 'magic-string';
+import { createFilter } from 'rollup-pluginutils';
+import { extname } from 'path';
 
 function postproc (code, opts) {
   if (!opts) opts = {}
@@ -91,12 +87,12 @@ function postproc (code, opts) {
 function _createFilter (opts) {
   if (!opts) opts = {}
 
-  var flt1 = rollupPluginutils.createFilter(opts.include, opts.exclude)
+  var flt1 = createFilter(opts.include, opts.exclude)
   var flt2 = opts.extensions &&
     opts.extensions.map(function (e) { return (e[0] !== '.' ? '.' + e : e).toLowerCase(); }) || ['.js']
 
   return function (name) {
-    return flt1(name) && flt2.indexOf(path.extname(name).toLowerCase()) > -1
+    return flt1(name) && flt2.indexOf(extname(name).toLowerCase()) > -1
   }
 }
 
@@ -121,4 +117,4 @@ function jspp (options) {
   }
 }
 
-module.exports = jspp;
+export default jspp;

@@ -1,20 +1,23 @@
 {
   "name": "rollup-plugin-cleanup",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Rollup plugin to trim trailing spaces, compact empty lines, and normalize line endings",
   "main": "dist/rollup-plugin-cleanup.cjs.js",
   "jsnext:main": "dist/rollup-plugin-cleanup.es.js",
+  "engines": {
+    "node": ">=0.12"
+  },
   "scripts": {
-    "test": "npm run build-cjs && mocha test/run.js",
-    "pretest": "npm build",
-    "build": "npm run build-cjs && npm run build-es6 && npm run build-pre",
-    "build-cjs": "rollup -c -f cjs -o dist/rollup-plugin-cleanup.cjs.js",
-    "build-es6": "rollup -c -f es -o dist/rollup-plugin-cleanup.es.js",
-    "build-pre": "rollup -c -f cjs --environment LEGACY=1 -o dist/legacy/rollup-plugin-cleanup.js"
+    "test": "node-version-gte-4 && mocha || mocha --compilers js:buble/register",
+    "lint": "node-version-gte-4 && eslint src test/run.js || node-version-lt-4",
+    "pretest": "npm run lint && npm run build",
+    "build": "rm -rf dist/* && npm run build:cjs && npm run build:es6",
+    "build:cjs": "rollup -c -f cjs -o dist/rollup-plugin-cleanup.cjs.js",
+    "build:es6": "rollup -c -f es -o dist/rollup-plugin-cleanup.es.js",
+    "prepublish": "npm test"
   },
   "files": [
-    "dist",
-    "README.md"
+    "dist"
   ],
   "repository": {
     "type": "git",
@@ -29,7 +32,11 @@
     "modules",
     "cleanup"
   ],
-  "author": "amarcruz <amarcruzbox-git@yahoo.com>",
+  "author": {
+    "name": "aMarCruz",
+    "email": "amarcruzbox-git@yahoo.com",
+    "url": "https://github.com/aMarCruz"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/aMarCruz/rollup-plugin-cleanup/issues"
@@ -43,6 +50,7 @@
     "eslint": "^3.4.0",
     "expect": "^1.20.2",
     "mocha": "^3.0.2",
+    "node-version-check": "^2.1.1",
     "rollup": "^0.34.13",
     "rollup-plugin-buble": "^0.13.0"
   }

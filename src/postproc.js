@@ -5,7 +5,7 @@ export default function postproc (code, opts) {
   if (!opts) opts = {}
 
   if (opts.cleanup === false) {
-    return { code: code }
+    return { code }
   }
   opts.sourceMap = opts.sourceMap !== false
 

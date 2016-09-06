@@ -1,10 +1,11 @@
-language: node_js
-
 sudo: false
+
+language: node_js
 
 node_js:
     - "6"
     - "4.2"
+    - "0.12"
 
 branches:
     only:
