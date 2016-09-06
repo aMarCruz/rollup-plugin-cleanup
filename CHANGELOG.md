@@ -1,3 +1,6 @@
+### v0.1.2
+- Fix the `lint` script of npm.
+
 ### v0.1.1
 - The generated files includes CommonJS & ES6 module versions, already transpiled.
 - Fixes an error when the last empty line does not ends with eol.

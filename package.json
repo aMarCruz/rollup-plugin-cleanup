@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-cleanup",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Rollup plugin to trim trailing spaces, compact empty lines, and normalize line endings",
   "main": "dist/rollup-plugin-cleanup.cjs.js",
   "jsnext:main": "dist/rollup-plugin-cleanup.es.js",
@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "node-version-gte-4 && mocha || mocha --compilers js:./buble-register",
-    "lint": "node-version-gte-4 && eslint src test/run.js || node-version-lt-4",
+    "lint": "node-version-gte-4 && eslint src test/index.js || node-version-lt-4",
     "pretest": "npm run lint && npm run build",
     "build": "rm -rf dist/* && npm run build:cjs && npm run build:es6",
     "build:cjs": "rollup -c -f cjs -o dist/rollup-plugin-cleanup.cjs.js",
@@ -17,7 +17,8 @@
     "prepublish": "npm test"
   },
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "repository": {
     "type": "git",
