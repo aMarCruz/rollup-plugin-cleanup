@@ -8,7 +8,7 @@
     "node": ">=0.12"
   },
   "scripts": {
-    "test": "node-version-gte-4 && mocha || mocha --compilers js:buble/register",
+    "test": "node-version-gte-4 && mocha || mocha --compilers js:./buble-register",
     "lint": "node-version-gte-4 && eslint src test/run.js || node-version-lt-4",
     "pretest": "npm run lint && npm run build",
     "build": "rm -rf dist/* && npm run build:cjs && npm run build:es6",
