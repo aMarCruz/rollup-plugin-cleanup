@@ -13,11 +13,12 @@ import { extname } from 'path'
 export default function _createFilter (opts) {
   if (!opts) opts = {}
 
-  const flt1 = createFilter(opts.include, opts.exclude)
-  const flt2 = opts.extensions &&
-    opts.extensions.map(e => (e[0] !== '.' ? '.' + e : e).toLowerCase()) || ['.js']
+  const filt = createFilter(opts.include, opts.exclude)
+  const exts = opts.extensions
+             ? opts.extensions.map(e => (e[0] !== '.' ? '.' + e : e).toLowerCase())
+             : ['.js']
 
   return function (name) {
-    return flt1(name) && flt2.indexOf(extname(name).toLowerCase()) > -1
+    return filt(name) && exts.indexOf(extname(name).toLowerCase()) > -1
   }
 }
