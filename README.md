@@ -1,5 +1,5 @@
 [![Build Status][build-image]][build-url]
-[![Windows Build Status][wbuild-image]][wbuild-url]
+[![AppVeyor Status][wbuild-image]][wbuild-url]
 [![npm Version][npm-image]][npm-url]
 [![License][license-image]][license-url]
 
@@ -67,7 +67,7 @@ Source Map support is given through the rollup `sourceMap` option.
 [build-image]:    https://img.shields.io/travis/aMarCruz/rollup-plugin-cleanup/master.svg?style=flat-square
 [build-url]:      https://travis-ci.org/aMarCruz/rollup-plugin-cleanup
 
-[wbuild-image]:   https://img.shields.io/appveyor/ci/gruntjs/grunt/master.svg?style=flat-square
+[wbuild-image]:   https://img.shields.io/appveyor/ci/aMarCruz/rollup-plugin-cleanup/master.svg?style=flat-square
 [wbuild-url]:     https://ci.appveyor.com/project/aMarCruz/rollup-plugin-cleanup/branch/master
 
 [npm-image]:      https://img.shields.io/npm/v/rollup-plugin-cleanup.svg?style=flat-square
