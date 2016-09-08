@@ -16,7 +16,7 @@ With *cleanup*, you have:
 
 **Why not Uglify?**
 
-Uglify is mainly a minifier, however you can use the -c "dead_code,drop_debugger,evaluate" -b "semicolons=false,quote_style=3,keep_quoted_props" --comments
+Uglify is a excelent *minifier* but you have little control over the results, while with cleanup your coding style remains intact and removal of comments is strictly under your control.
 
 ## Install
 
