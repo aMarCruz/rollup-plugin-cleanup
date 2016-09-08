@@ -54,6 +54,8 @@ normalizeEols | `unix` | Allowed values: "unix", "mac", "win"
 sourceType | `'module'` | For the parser, change it to "script" if necessary.
 extensions | `.js` | Array of strings with case-insensitive extensions of files to process.
 
+\* Source Map support is given through the rollup `sourceMap` option.
+
 ### Predefined Filters
 
 Name    | Regex | Site/Description
@@ -67,8 +69,6 @@ eslint  | `/^\s*(?:eslint(?:\s|-env|-disable|-enable)|global\s)/` | [ESLint](htt
 jscs    | `/^\s*jscs:[ed]/` | [jscs](http://jscs.info/overview)
 istanbul | `/^\s*istanbul\s/` | [istanbul](https://gotwarlost.github.io/istanbul/)
 srcmaps | `/#\ssource(Mapping)URL=/` | [Source Maps](http://www.html5rocks.com/en/tutorials/developertools/sourcemaps/) in HTML 5 Rocks!
-
-Source Map support is given through the rollup `sourceMap` option.
 
 ## TODO
 
