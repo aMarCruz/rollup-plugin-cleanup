@@ -60,13 +60,13 @@ Name    | Regex | Site/Description
 --------|-------|-----------------
 license | `/^@license\b/` | Preserve comments with `"@license"` inside.
 some    | `/(?:@license|@preserve|@cc_on)\b/` | Like the [uglify](https://github.com/mishoo/UglifyJS2) default
-jsdoc   | `/^\/\*\*[^@]*@[A-Za-z]/` | [JSDoc](http://usejsdoc.org/)
-jslint  | `/^\/[*\/](?:jslint|global|property)\b/` | [JSLint](http://www.jslint.com/help.html)
-jshint  | `/^\/[*\/]\s*(?:jshint|globals|exported)\s/` | [JSHint](http://jshint.com/docs/#inline-configuration)
-eslint  | `/^\/[*\/]\s*(?:eslint(?:\s|-[ed])|global\s)/` | [ESLint](http://eslint.org/docs/user-guide/configuring)
-jscs    | `/^\/[*\/]\s*jscs:[ed]/` | [jscs](http://jscs.info/overview)
-istanbul | `/^\/[*\/]\s*istanbul\s/` | [istanbul](https://gotwarlost.github.io/istanbul/)
-srcmaps | `/\/\/#\ssource(Mapping)URL=/` | [Source Maps](http://www.html5rocks.com/en/tutorials/developertools/sourcemaps/) in HTML 5 Rocks!
+jsdoc   | `/^\*[^@]*@[A-Za-z]/` | [JSDoc](http://usejsdoc.org/)
+jslint  | `/^(?:jslint|global|property)\b/` | [JSLint](http://www.jslint.com/help.html)
+jshint  | `/^\s*(?:jshint|globals|exported)\s/` | [JSHint](http://jshint.com/docs/#inline-configuration)
+eslint  | `/^\s*(?:eslint(?:\s|-env|-disable|-enable)|global\s)/` | [ESLint](http://eslint.org/docs/user-guide/configuring)
+jscs    | `/^\s*jscs:[ed]/` | [jscs](http://jscs.info/overview)
+istanbul | `/^\s*istanbul\s/` | [istanbul](https://gotwarlost.github.io/istanbul/)
+srcmaps | `/#\ssource(Mapping)URL=/` | [Source Maps](http://www.html5rocks.com/en/tutorials/developertools/sourcemaps/) in HTML 5 Rocks!
 
 Source Map support is given through the rollup `sourceMap` option.
 
