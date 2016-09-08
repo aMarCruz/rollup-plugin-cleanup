@@ -9,7 +9,7 @@
 
 With *cleanup*, you have:
 
-* Remotion of JavaScript through powerful filters (configurable)
+* Removal of JavaScript comments through powerful filters (configurable)
 * Empty lines compactation (configurable)
 * Remotion of trailing spaces
 * Normalization of line endings (Unix, Mac, or Windows)
