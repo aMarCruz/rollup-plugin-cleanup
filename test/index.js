@@ -15,9 +15,33 @@ function concat (name, subdir) {
 
 process.chdir(__dirname)
 
-function testStr (code, expected, opts) {
-  let result = plugin(opts).transform(code, 'test.js')
-  expect(result.code).toBe(expected)
+function merge (dest, src) {
+  for (let p in src) {
+    if (src.hasOwnProperty(p)) dest[p] = src[p]
+  }
+  return src
+}
+
+function testLines (code, expected, lines) {
+  let options = { comments: 'all', functions: false, debuggerStatements: false }
+  let result
+  if (lines != null) {
+    if (typeof lines == 'object') merge(options, lines)
+    else options.maxEmptyLines = lines
+  }
+  result = plugin(options).transform(code, 'test.js')
+  expect(result == null ? null : result.code).toBe(expected)
+}
+
+function testFile (file, opts, save) {
+  let fname  = concat(file, 'fixtures')
+  let expected = fs.readFileSync(concat(file), 'utf8')
+  let code   = fs.readFileSync(fname, 'utf8')
+
+  let result = plugin(opts).transform(code, fname)
+  if (save) fs.writeFileSync(concat(file + '_out'), result.code, 'utf8')
+
+  expect(result == null ? null : result.code).toBe(expected)
 }
 
 describe('rollup-plugin-cleanup', () => {
@@ -28,7 +52,7 @@ describe('rollup-plugin-cleanup', () => {
   const emptyLinesMiddle = emptyLines10 + 'X' + emptyLines10 + 'X' + emptyLines10
 
   it('by default removes all the empty lines and normalize to unix', () => {
-    testStr([
+    testLines([
       '',
       'abc ',
       'x\t',
@@ -39,46 +63,64 @@ describe('rollup-plugin-cleanup', () => {
   })
 
   it('do not touch current indentation of non-empty lines', () => {
-    testStr('  \n X\n  X ', ' X\n  X')
+    testLines('  \n X\n  X ', ' X\n  X')
   })
 
   it('has fine support for empty lines with `maxEmptyLines`', () => {
-    testStr(emptyLinesTop, 'X')
-    testStr(emptyLinesBottom, 'X\n')
+    testLines(emptyLinesTop, 'X')
+    testLines(emptyLinesBottom, 'X\n')
 
-    testStr(emptyLinesTop, '\nX', { maxEmptyLines: 1 })
-    testStr(emptyLinesBottom, 'X\n\n', { maxEmptyLines: 1 })
-    testStr(emptyLinesMiddle, '\nX\n\nX\n\n', { maxEmptyLines: 1 })
+    testLines(emptyLinesTop, '\nX', 1)
+    testLines(emptyLinesBottom, 'X\n\n', 1)
+    testLines(emptyLinesMiddle, '\nX\n\nX\n\n', 1)
 
-    testStr(emptyLinesTop, '\n\n\nX', { maxEmptyLines: 3 })
-    testStr(emptyLinesBottom, 'X\n\n\n\n', { maxEmptyLines: 3 })
-    testStr(emptyLinesMiddle, '\n\n\nX\n\n\n\nX\n\n\n\n', { maxEmptyLines: 3 })
+    testLines(emptyLinesTop, '\n\n\nX', 3)
+    testLines(emptyLinesBottom, 'X\n\n\n\n', 3)
+    testLines(emptyLinesMiddle, '\n\n\nX\n\n\n\nX\n\n\n\n', 3)
   })
 
-  it('can leave all the lines setting `maxEmptyLines` = -1', () => {
-    testStr(emptyLinesTop, emptyLinesTop, { maxEmptyLines: -1 })
-    testStr(emptyLinesBottom, emptyLinesBottom, { maxEmptyLines: -1 })
-    testStr(emptyLinesMiddle, emptyLinesMiddle, { maxEmptyLines: -1 })
+  it('can keep all the lines by setting `maxEmptyLines` = -1', () => {
+    testLines(emptyLinesTop, null, -1)
+    testLines(emptyLinesBottom, null, -1)
+    testLines(emptyLinesMiddle, null, -1)
   })
 
-  it('have convertion to Windows line-endings with `eolType` = "win"', () => {
-    const opts = { maxEmptyLines: 1, eolType: 'win' }
-    testStr(emptyLinesTop, '\r\nX', opts)
-    testStr(emptyLinesBottom, 'X\r\n\r\n', opts)
-    testStr(emptyLinesMiddle, '\r\nX\r\n\r\nX\r\n\r\n', opts)
+  it('can convert to Windows line-endings with `normalizeEols` = "win"', () => {
+    const opts = { maxEmptyLines: 1, normalizeEols: 'win' }
+    testLines(emptyLinesTop, '\r\nX', opts)
+    testLines(emptyLinesBottom, 'X\r\n\r\n', opts)
+    testLines(emptyLinesMiddle, '\r\nX\r\n\r\nX\r\n\r\n', opts)
   })
 
-  it('and convertion to Mac line-endings with `eolType` = "mac"', () => {
-    const opts = { maxEmptyLines: 1, eolType: 'mac' }
-    testStr(emptyLinesTop, '\rX', opts)
-    testStr(emptyLinesBottom, 'X\r\r', opts)
-    testStr(emptyLinesMiddle, '\rX\r\rX\r\r', opts)
+  it('and convertion to Mac line-endings with `normalizeEols` = "mac"', () => {
+    const opts = { maxEmptyLines: 1, normalizeEols: 'mac' }
+    testLines(emptyLinesTop, '\rX', opts)
+    testLines(emptyLinesBottom, 'X\r\r', opts)
+    testLines(emptyLinesMiddle, '\rX\r\rX\r\r', opts)
   })
 
-  it('makes normalization to the desired `eolType` lines', () => {
-    const opts = { maxEmptyLines: -1, eolType: 'mac' }
-    testStr('\r\n \n\r \r\r\n \r\r \n', '\r\r\r\r\r\r\r\r', opts)
-  })})
+  it('makes normalization to the desired `normalizeEols` lines', () => {
+    const opts = { maxEmptyLines: -1, normalizeEols: 'mac' }
+    testLines('\r\n \n\r \r\r\n \r\r \n', '\r\r\r\r\r\r\r\r', opts)
+  })
+})
+
+
+describe('removing comments', () => {
+  it('with some defaults', () => {
+    testFile('defaults', {
+      comments: ['some', 'eslint']
+    })
+  })
+
+  /*
+  it('in html inside JS (non-default)', () => {
+    testFile('html-comms', {
+      comments: ['some', 'eslint', 'html']
+    }, true)
+  })*/
+})
+
 
 describe('SourceMap support', () => {
 
@@ -89,7 +131,9 @@ describe('SourceMap support', () => {
       entry: concat('bundle-src.js', 'maps'),
       sourceMap: true,
       plugins: [
-        plugin()
+        plugin({
+          comments: ['some', 'eslint']
+        })
       ]
     }).then(function (bundle) {
       let result = bundle.generate({

@@ -44,6 +44,7 @@
   },
   "homepage": "https://github.com/aMarCruz/rollup-plugin-cleanup",
   "dependencies": {
+    "acorn": "^3.3.0",
     "magic-string": "^0.16.0",
     "rollup-pluginutils": "^1.5.2"
   },

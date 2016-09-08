@@ -2,32 +2,174 @@
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var MagicString = _interopDefault(require('magic-string'));
 var rollupPluginutils = require('rollup-pluginutils');
 var path = require('path');
+var MagicString = _interopDefault(require('magic-string'));
+var acorn = _interopDefault(require('acorn'));
 
-function postproc (code, opts) {
+/**
+ * Creates a filter for the options `include`, `exclude`, and `extensions`.
+ * Since `extensions` is not a rollup option, I think is widely used.
+ *
+ * @param {object} opts? - The user options
+ * @returns {function}     Filter function that returns true if a given
+ *                         file matches the filter.
+ */
+function _createFilter (opts) {
   if (!opts) opts = {}
 
-  if (opts.cleanup === false) {
-    return { code: code }
+  var filt = rollupPluginutils.createFilter(opts.include, opts.exclude)
+  var exts = opts.extensions
+             ? opts.extensions.map(function (e) { return (e[0] !== '.' ? '.' + e : e).toLowerCase(); })
+             : ['.js']
+
+  return function (name) {
+    return filt(name) && exts.indexOf(path.extname(name).toLowerCase()) > -1
   }
-  opts.sourceMap = opts.sourceMap !== false
+}
 
-  var magicStr = new MagicString(code)
+var _filters = {
+  // only preserve license
+  license:  /^@license\b/,
+  // (almost) like the uglify defaults
+  some:     /(?:@license|@preserve|@cc_on)\b/,
+  // http://usejsdoc.org/
+  jsdoc:    /^\*[^@]*@[A-Za-z]/,
+  // http://www.jslint.com/help.html
+  jslint:   /^(?:jslint|global|property)\b/,
+  // http://jshint.com/docs/#inline-configuration
+  jshint:   /^\s*(?:jshint|globals|exported)\s/,
+  // http://eslint.org/docs/user-guide/configuring
+  eslint:   /^\s*(?:eslint(?:\s|-env|-disable|-enable)|global\s)/,
+  // http://jscs.info/overview
+  jscs:     /^\s*jscs:[ed]/,
+  // https://gotwarlost.github.io/istanbul/
+  istanbul: /^\s*istanbul\s/,
+  // http://www.html5rocks.com/en/tutorials/developertools/sourcemaps/
+  srcmaps:  /\/\/#\ssource(Mapping)URL=/,
+  // preserve html comments
+  html:     /<!--(?!>)[\S\s]*?-->/
+}
 
-  var eolTo   = opts.eolType === 'win' ? '\r\n' : opts.eolType === 'mac' ? '\r' : '\n'
-  var empties = opts.maxEmptyLines
+function parseOptions (options) {
+  if (!options) options = {}
+
+  // multiple forms tu specify comment filters, default is 'some'
+  var comments = options.comments
+  if (comments == null) {
+    comments = [_filters.some]
+  } else if (comments === 'all') {
+    comments = true
+  } else if (comments === 'none') {
+    comments = false
+  } else if (typeof comments != 'boolean') {
+    var filters = Array.isArray(comments) ? comments : [comments]
+    comments = []
+    filters.forEach(function (f) {
+      if (f instanceof RegExp) {
+        comments.push(f)
+      } else if (typeof f != 'string') {
+        throw new Error('type mismatch in comment filter.')
+      } else if (f in _filters) {
+        comments.push(_filters[f])
+      } else {
+        throw new Error(("unknown comments filter \"" + f + "\""))
+      }
+    })
+  }
+
+  var normalizeEols = options.hasOwnProperty('normalizeEols')
+                    ? options.normalizeEols : options.eolType
+  if (normalizeEols !== false && normalizeEols !== 'win' && normalizeEols !== 'mac') {
+    normalizeEols = 'unix'
+  }
+
+  return {
+    ecmaVersion: options.ecmaVersion || 6,
+    sourceMap: options.sourceMap !== false,
+    sourceType: options.sourceType || 'module',
+    maxEmptyLines: options.maxEmptyLines | 0,
+    normalizeEols: normalizeEols,
+    comments: comments
+  }
+}
+
+/**
+ * By using premaked string of spaces, blankBlock is faster than
+ * block.replace(/[^ \n]+/, ' ').
+ *
+ * @const {string}
+ * @static
+ */
+var space150 = new Array(151).join(' ')
+
+/**
+ * Replaces all characters in the clock with spaces, except line-feeds.
+ *
+ * @param   {string} block - The buffer to replace
+ * @returns {string}         The replacement block.
+ */
+function blankBlock (block) {
+  return block.replace(/[^\n\r]+/g, function (m) {
+    var len = m.length
+    var str = space150
+
+    while (str.length < len) str += space150
+    return str.slice(0, len)
+  })
+}
+
+/* eslint no-debugger:0 */
+
+function preproc (magicStr, code, file, options) {
+  var comments = options.comments
+
+  if (comments === true || !/\.jsx?$/.test(path.extname(file))) {
+    return code
+  }
+
+  try {
+    acorn.parse(code, {
+      ecmaVersion: options.ecmaVersion,
+      sourceType: options.sourceType,
+      onComment: blankComment
+    })
+  } catch (err) {
+    err.message += " in " + file
+    throw err
+  }
+
+  function blankComment (block, text, start, end) {
+    if (comments !== false) {
+      for (var i = 0; i < comments.length; i++) {
+        if (comments[i].test(text)) return
+      }
+    }
+    block = blankBlock(code.slice(start, end))
+    code = code.slice(0, start) + block + code.slice(end)
+  }
+
+  return code
+}
+
+var EOL_TYPES   = { unix: '\n', mac: '\r', win: '\r\n' }
+var FIRST_LINES = /^(\s*[\r\n])\s*\S/
+var EMPTY_LINES = /(\s*[\r\n])\s*\S/g
+var TRIM_LINES  = /[ \t\f\v]*(?:\r\n?|\n)/g
+
+
+function postproc (magicStr, code, file, options) {
+
+  var eolTo   = EOL_TYPES[options.normalizeEols]
+  var empties = options.maxEmptyLines
+  // matches one or more line endings and their leading spaces
+  var regex   = EMPTY_LINES
 
   var maxEolChars = empties < 0 ? 0x7fffffff : empties ? empties * eolTo.length : 0
-
-  // matches one or more line endings and their leading spaces
-  var regex = /(\s*[\r\n])\s*\S/g
-
   var match, block, changes
 
   // first empty lines
-  match = code.match(/^(\s*[\r\n])\s*\S/)
+  match = code.match(FIRST_LINES)
   if (match) {
     block = match[1]
     replaceBlock(block, 0, limitLines(block))
@@ -57,13 +199,7 @@ function postproc (code, opts) {
     replaceBlock(block, match.index, /[\r\n]/.test(block) ? limitLines(block) : '')
   }
 
-  var result = {
-    code: changes ? magicStr.toString() : code
-  }
-  if (changes && opts.sourceMap) {
-    result.map = magicStr.generateMap({ hires: true })
-  }
-  return result
+  return changes
 
   // helpers ==============================================
 
@@ -74,30 +210,27 @@ function postproc (code, opts) {
   }
 
   function limitLines (str) {
-    var ss = str.replace(/[ \t]*(?:\r\n?|\n)/g, eolTo)
+    var ss = str.replace(TRIM_LINES, eolTo)
     if (ss.length > maxEolChars) ss = ss.slice(0, maxEolChars)
     return ss
   }
 }
 
-/**
- * Creates a filter for the options `include`, `exclude`, and `extensions`.
- * Since `extensions` is not a rollup option, I think is widely used.
- *
- * @param {object} opts? - The user options
- * @returns {function}     Filter function that returns true if a given
- *                         file matches the filter.
- */
-function _createFilter (opts) {
-  if (!opts) opts = {}
+/* eslint no-debugger:0 */
 
-  var flt1 = rollupPluginutils.createFilter(opts.include, opts.exclude)
-  var flt2 = opts.extensions &&
-    opts.extensions.map(function (e) { return (e[0] !== '.' ? '.' + e : e).toLowerCase(); }) || ['.js']
+function transform (code, file, options) {
 
-  return function (name) {
-    return flt1(name) && flt2.indexOf(path.extname(name).toLowerCase()) > -1
+  var magicStr = new MagicString(code)
+
+  code = preproc(magicStr, code, file, options)
+
+  if (postproc(magicStr, code, file, options)) {
+    return {
+      code: magicStr.toString(),
+      map: options.sourceMap ? magicStr.generateMap({ hires: true }) : null
+    }
   }
+  return null
 }
 
 /**
@@ -105,18 +238,21 @@ function _createFilter (opts) {
  * @module
  */
 function jspp (options) {
+  if (!options) options = {}
 
-  // prepare extensions to match with the extname() result
+  // merge include, exclude, and extensions
   var filter = _createFilter(options)
+
+  // validate and clone the plugin options
+  options = parseOptions(options)
 
   return {
 
     name: 'cleanup',
 
-    transform: function transform (code, id) {
+    transform: function transform$$ (code, id) {
       return filter(id)
-        ? postproc(code, options)
-        : null
+        ? transform(code, id, options) : null
     }
   }
 }

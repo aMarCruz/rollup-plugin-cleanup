@@ -2,14 +2,18 @@
  * rollup-plugin-cleanup
  * @module
  */
-import postproc from './postproc'
 import createFilter from './util/filter'
-
+import parseOptions from './parse-options'
+import cleanup from './cleanup'
 
 export default function jspp (options) {
+  if (!options) options = {}
 
-  // prepare extensions to match with the extname() result
+  // merge include, exclude, and extensions
   const filter = createFilter(options)
+
+  // validate and clone the plugin options
+  options = parseOptions(options)
 
   return {
 
@@ -17,8 +21,7 @@ export default function jspp (options) {
 
     transform (code, id) {
       return filter(id)
-        ? postproc(code, options)
-        : null
+        ? cleanup(code, id, options) : null
     }
   }
 }
