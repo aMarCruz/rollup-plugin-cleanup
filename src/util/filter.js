@@ -15,14 +15,14 @@ export default function _createFilter (opts) {
 
   const filt = createFilter(opts.include, opts.exclude)
 
-  let exts = opts.extensions || '*'
+  let exts = opts.extensions || ['.js', '.jsx', '.tag']
   if (exts !== '*') {
     if (!Array.isArray(exts)) exts = [exts]
-    exts = exts.map(e => (e[0] !== '.' ? '.' + e : e).toLowerCase())
+    exts = exts.map(e => e[0] !== '.' ? '.' + e : e)
   }
 
   return function (name) {
     return filt(name) &&
-      (exts === '*' || exts.indexOf(extname(name).toLowerCase()) > -1)
+      (exts === '*' || exts.indexOf(extname(name)) > -1)
   }
 }

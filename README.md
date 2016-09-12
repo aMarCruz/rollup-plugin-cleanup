@@ -17,7 +17,7 @@ With *cleanup*, you have:
 
 **IMPORTANT:**
 
-Because _rollup_ is a JavaScript bundler and _cleanup_ is a JavaScript post-processor, it should work with any file handled by rollup, but you need put cleanup last in your plugin list.
+Because _rollup_ is a JavaScript bundler and _cleanup_ is a JavaScript post-processor, it should work with any JavaScript dialect handled by rollup, but you need put cleanup last in your plugin list.
 
 
 **Why not Uglify?**
@@ -59,7 +59,7 @@ comments | `['some']` | Regex, array of filter names, "all" to keep all, or "non
 maxEmptyLines | `0` | Use a positive value or -1 to keep all the lines
 normalizeEols | `unix` | Allowed values: "unix", "mac", "win"
 sourceType | `'module'` | For the parser, change it to "script" if necessary.
-extensions | `'*'` | String or array of strings with extensions of files to process.
+extensions | `['.js', '.jsx', '.tag']` | String or array of strings with extensions of files to process.
 
 \* Source Map support is given through the rollup `sourceMap` option.
 

@@ -1,3 +1,7 @@
+### v0.1.4
+- Default `extensions` are changed from `"*"` to `['.js', '.jsx', '.tag']` to avoid conflicts with others plugins.
+- The `extensions` option is case-sensitive by consistency with rollup plugins.
+
 ### v0.1.3
 - The string passed to the comment filters now includes a character preceding the content, `"/"` for one-line comments, and `"*"` for multiline comments.
 - Adds note to the README about usage as post-processor - See issue [#1](https://github.com/aMarCruz/rollup-plugin-cleanup/issues/1)
