@@ -49,7 +49,7 @@ rollup({
 That's it.
 
 By default, only the .js files are processed, but it can be useful for any non-binary file if you pass the option `comments='all'` to the plugin.
-You can restrict the accepted files using the `rollup` global options "include" and "exclude", or the "extensions" option (see below).
+You can restrict the accepted files using the options "include", "exclude", and "extensions" (see below).
 
 ## Options
 
@@ -59,7 +59,7 @@ comments | `['some']` | Regex, array of filter names, "all" to keep all, or "non
 maxEmptyLines | `0` | Use a positive value or -1 to keep all the lines
 normalizeEols | `unix` | Allowed values: "unix", "mac", "win"
 sourceType | `'module'` | For the parser, change it to "script" if necessary.
-extensions | `'*'` | String or array of strings with case-insensitive extensions of files to process.
+extensions | `'*'` | String or array of strings with extensions of files to process.
 
 \* Source Map support is given through the rollup `sourceMap` option.
 
