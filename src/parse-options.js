@@ -1,25 +1,23 @@
 
 const _filters = {
   // only preserve license
-  license:  /^@license\b/,
+  license:  /@license\b/,
   // (almost) like the uglify defaults
   some:     /(?:@license|@preserve|@cc_on)\b/,
   // http://usejsdoc.org/
-  jsdoc:    /^\*[^@]*@[A-Za-z]/,
+  jsdoc:    /^\*\*[^@]*@[A-Za-z]/,
   // http://www.jslint.com/help.html
-  jslint:   /^(?:jslint|global|property)\b/,
+  jslint:   /^[\/\*](?:jslint|global|property)\b/,
   // http://jshint.com/docs/#inline-configuration
-  jshint:   /^\s*(?:jshint|globals|exported)\s/,
+  jshint:   /^[\/\*]\s*(?:jshint|globals|exported)\s/,
   // http://eslint.org/docs/user-guide/configuring
-  eslint:   /^\s*(?:eslint(?:\s|-env|-disable|-enable)|global\s)/,
+  eslint:   /^[\/\*]\s*(?:eslint(?:\s|-env|-disable|-enable)|global\s)/,
   // http://jscs.info/overview
-  jscs:     /^\s*jscs:[ed]/,
+  jscs:     /^[\/\*]\s*jscs:[ed]/,
   // https://gotwarlost.github.io/istanbul/
-  istanbul: /^\s*istanbul\s/,
+  istanbul: /^[\/\*]\s*istanbul\s/,
   // http://www.html5rocks.com/en/tutorials/developertools/sourcemaps/
-  srcmaps:  /\/\/#\ssource(Mapping)URL=/,
-  // preserve html comments
-  html:     /<!--(?!>)[\S\s]*?-->/
+  srcmaps:  /^.[#@]\ssource(?:Mapping)?URL=/
 }
 
 export default function parseOptions (options) {

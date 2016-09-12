@@ -17,7 +17,7 @@ function _createFilter (opts) {
   var filt = createFilter(opts.include, opts.exclude)
   var exts = opts.extensions
              ? opts.extensions.map(function (e) { return (e[0] !== '.' ? '.' + e : e).toLowerCase(); })
-             : ['.js']
+             : ['.js', '.jsx']
 
   return function (name) {
     return filt(name) && exts.indexOf(extname(name).toLowerCase()) > -1

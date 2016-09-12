@@ -19,36 +19,38 @@ function _createFilter (opts) {
   if (!opts) opts = {}
 
   var filt = rollupPluginutils.createFilter(opts.include, opts.exclude)
-  var exts = opts.extensions
-             ? opts.extensions.map(function (e) { return (e[0] !== '.' ? '.' + e : e).toLowerCase(); })
-             : ['.js']
+
+  var exts = opts.extensions || '*'
+  if (exts !== '*') {
+    if (!Array.isArray(exts)) exts = [exts]
+    exts = exts.map(function (e) { return (e[0] !== '.' ? '.' + e : e).toLowerCase(); })
+  }
 
   return function (name) {
-    return filt(name) && exts.indexOf(path.extname(name).toLowerCase()) > -1
+    return filt(name) &&
+      (exts === '*' || exts.indexOf(path.extname(name).toLowerCase()) > -1)
   }
 }
 
 var _filters = {
   // only preserve license
-  license:  /^@license\b/,
+  license:  /@license\b/,
   // (almost) like the uglify defaults
   some:     /(?:@license|@preserve|@cc_on)\b/,
   // http://usejsdoc.org/
-  jsdoc:    /^\*[^@]*@[A-Za-z]/,
+  jsdoc:    /^\*\*[^@]*@[A-Za-z]/,
   // http://www.jslint.com/help.html
-  jslint:   /^(?:jslint|global|property)\b/,
+  jslint:   /^[\/\*](?:jslint|global|property)\b/,
   // http://jshint.com/docs/#inline-configuration
-  jshint:   /^\s*(?:jshint|globals|exported)\s/,
+  jshint:   /^[\/\*]\s*(?:jshint|globals|exported)\s/,
   // http://eslint.org/docs/user-guide/configuring
-  eslint:   /^\s*(?:eslint(?:\s|-env|-disable|-enable)|global\s)/,
+  eslint:   /^[\/\*]\s*(?:eslint(?:\s|-env|-disable|-enable)|global\s)/,
   // http://jscs.info/overview
-  jscs:     /^\s*jscs:[ed]/,
+  jscs:     /^[\/\*]\s*jscs:[ed]/,
   // https://gotwarlost.github.io/istanbul/
-  istanbul: /^\s*istanbul\s/,
+  istanbul: /^[\/\*]\s*istanbul\s/,
   // http://www.html5rocks.com/en/tutorials/developertools/sourcemaps/
-  srcmaps:  /\/\/#\ssource(Mapping)URL=/,
-  // preserve html comments
-  html:     /<!--(?!>)[\S\s]*?-->/
+  srcmaps:  /^.[#@]\ssource(?:Mapping)?URL=/
 }
 
 function parseOptions (options) {
@@ -124,7 +126,7 @@ function blankBlock (block) {
 function preproc (magicStr, code, file, options) {
   var comments = options.comments
 
-  if (comments === true || !/\.jsx?$/.test(path.extname(file))) {
+  if (comments === true) {
     return code
   }
 
@@ -141,6 +143,7 @@ function preproc (magicStr, code, file, options) {
 
   function blankComment (block, text, start, end) {
     if (comments !== false) {
+      text = (block ? '*' : '/') + text
       for (var i = 0; i < comments.length; i++) {
         if (comments[i].test(text)) return
       }

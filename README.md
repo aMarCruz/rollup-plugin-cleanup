@@ -5,7 +5,7 @@
 
 # rollup-plugin-cleanup
 
-[Rollup](http://rollupjs.org/) plugin to remove comments, trim trailing spaces, compact empty lines, and normalize line endings in .js files.
+[Rollup](http://rollupjs.org/) plugin to remove comments, trim trailing spaces, compact empty lines, and normalize line endings in JavaScript files.
 
 With *cleanup*, you have:
 
@@ -14,6 +14,11 @@ With *cleanup*, you have:
 * Remotion of trailing spaces
 * Normalization of line endings (Unix, Mac, or Windows)
 * Source Map support
+
+**IMPORTANT:**
+
+Because _rollup_ is a JavaScript bundler and _cleanup_ is a JavaScript post-processor, it should work with any file handled by rollup, but you need put cleanup last in your plugin list.
+
 
 **Why not Uglify?**
 
@@ -29,12 +34,14 @@ npm install rollup-plugin-cleanup --save-dev
 
 ```js
 import { rollup } from 'rollup';
+import awesome from 'rollup-plugin-awesome';
 import cleanup from 'rollup-plugin-cleanup';
 
 rollup({
   entry: 'src/main.js',
   plugins: [
-    cleanup()
+    awesome(),        // other plugins
+    cleanup()         // cleanup here
   ]
 }).then(...)
 ```
@@ -52,7 +59,7 @@ comments | `['some']` | Regex, array of filter names, "all" to keep all, or "non
 maxEmptyLines | `0` | Use a positive value or -1 to keep all the lines
 normalizeEols | `unix` | Allowed values: "unix", "mac", "win"
 sourceType | `'module'` | For the parser, change it to "script" if necessary.
-extensions | `.js` | Array of strings with case-insensitive extensions of files to process.
+extensions | `'*'` | String or array of strings with case-insensitive extensions of files to process.
 
 \* Source Map support is given through the rollup `sourceMap` option.
 
@@ -60,15 +67,15 @@ extensions | `.js` | Array of strings with case-insensitive extensions of files 
 
 Name    | Regex | Site/Description
 --------|-------|-----------------
-license | `/^@license\b/` | Preserve comments with `"@license"` inside.
+license | `/@license\b/` | Preserve comments with `"@license"` inside.
 some    | `/(?:@license|@preserve|@cc_on)\b/` | Like the [uglify](https://github.com/mishoo/UglifyJS2) default
-jsdoc   | `/^\*[^@]*@[A-Za-z]/` | [JSDoc](http://usejsdoc.org/)
-jslint  | `/^(?:jslint|global|property)\b/` | [JSLint](http://www.jslint.com/help.html)
-jshint  | `/^\s*(?:jshint|globals|exported)\s/` | [JSHint](http://jshint.com/docs/#inline-configuration)
-eslint  | `/^\s*(?:eslint(?:\s|-env|-disable|-enable)|global\s)/` | [ESLint](http://eslint.org/docs/user-guide/configuring)
-jscs    | `/^\s*jscs:[ed]/` | [jscs](http://jscs.info/overview)
-istanbul | `/^\s*istanbul\s/` | [istanbul](https://gotwarlost.github.io/istanbul/)
-srcmaps | `/#\ssource(Mapping)URL=/` | [Source Maps](http://www.html5rocks.com/en/tutorials/developertools/sourcemaps/) in HTML 5 Rocks!
+jsdoc   | `/^\*\*[^@]*@[A-Za-z]/` | [JSDoc](http://usejsdoc.org/)
+jslint  | `/^[\/\*](?:jslint|global|property)\b/` | [JSLint](http://www.jslint.com/help.html)
+jshint  | `/^[\/\*]\s*(?:jshint|globals|exported)\s/` | [JSHint](http://jshint.com/docs/#inline-configuration)
+eslint  | `/^[\/\*]\s*(?:eslint(?:\s|-env|-disable|-enable)|global\s)/` | [ESLint](http://eslint.org/docs/user-guide/configuring)
+jscs    | `/^[\/\*]\s*jscs:[ed]/` | [jscs](http://jscs.info/overview)
+istanbul | `/^[\/\*]\s*istanbul\s/` | [istanbul](https://gotwarlost.github.io/istanbul/)
+srcmaps | `/^.[#@]\ssource(?:Mapping)?URL=/` | [Source Map](https://docs.google.com/document/d/1U1RGAehQwRypUTovF1KRlpiOFze0b-_2gc6fAH0KY0k/edit)
 
 ## TODO
 

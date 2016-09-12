@@ -2,13 +2,12 @@
 
 import acorn from 'acorn'
 import blankBlock from './blank-block'
-import { extname } from 'path'
 
 
 export default function preproc (magicStr, code, file, options) {
   const comments = options.comments
 
-  if (comments === true || !/\.jsx?$/.test(extname(file))) {
+  if (comments === true) {
     return code
   }
 
@@ -25,6 +24,7 @@ export default function preproc (magicStr, code, file, options) {
 
   function blankComment (block, text, start, end) {
     if (comments !== false) {
+      text = (block ? '*' : '/') + text
       for (var i = 0; i < comments.length; i++) {
         if (comments[i].test(text)) return
       }
