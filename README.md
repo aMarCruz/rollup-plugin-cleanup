@@ -48,7 +48,7 @@ rollup({
 
 That's it.
 
-By default, only the .js files are processed, but it can be useful for any non-binary file if you pass the option `comments='all'` to the plugin.
+By default, only the .js, .jsx, and .tag files are processed, but it can be useful for any non-binary file if you pass the option `comments='all'` to the plugin.
 You can restrict the accepted files using the options "include", "exclude", and "extensions" (see below).
 
 ## Options
