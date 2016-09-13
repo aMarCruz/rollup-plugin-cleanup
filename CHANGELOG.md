@@ -1,5 +1,5 @@
 ### v0.1.4
-- Default `extensions` are changed from `"*"` to `['.js', '.jsx', '.tag']` to avoid conflicts with others plugins.
+- Default `extensions` are changed from `"*"` to `['.js', '.jsx', '.tag']` to avoid conflicts with other plugins.
 - The `extensions` option is case-sensitive by consistency with rollup plugins.
 
 ### v0.1.3
