@@ -59,6 +59,8 @@ comments | `['some']` | Regex, array of filter names, "all" to keep all, or "non
 maxEmptyLines | `0` | Use a positive value or -1 to keep all the lines
 normalizeEols | `unix` | Allowed values: "unix", "mac", "win"
 sourceType | `'module'` | For the parser, change it to "script" if necessary.
+include    | `''` | [minimatch](https://github.com/isaacs/minimatch) or array of minimatch patterns for paths to include in the process.
+exclude    | `''` | minimatch or array of minimatch patterns for paths to exclude in the process.
 extensions | `['.js', '.jsx', '.tag']` | String or array of strings with extensions of files to process.
 
 \* Source Map support is given through the rollup `sourceMap` option.
@@ -75,7 +77,7 @@ jshint  | `/^[\/\*]\s*(?:jshint|globals|exported)\s/` | [JSHint](http://jshint.c
 eslint  | `/^[\/\*]\s*(?:eslint(?:\s|-env|-disable|-enable)|global\s)/` | [ESLint](http://eslint.org/docs/user-guide/configuring)
 jscs    | `/^[\/\*]\s*jscs:[ed]/` | [jscs](http://jscs.info/overview)
 istanbul | `/^[\/\*]\s*istanbul\s/` | [istanbul](https://gotwarlost.github.io/istanbul/)
-srcmaps | `/^.[#@]\ssource(?:Mapping)?URL=/` | [Source Map](https://docs.google.com/document/d/1U1RGAehQwRypUTovF1KRlpiOFze0b-_2gc6fAH0KY0k/edit)
+srcmaps | `/^.[#@]\ssource(?:Mapping)?URL=/` | [Source Map](http://source-map.github.io/)
 
 ## TODO
 
@@ -83,7 +85,6 @@ This is work in progress, so please update cleanup constantly, I hope the first 
 
 - [ ] 100% test coverage and more tests
 - [ ] async mode
-- [ ] Configuration from the file system
 - [ ] Better documentation*
 - [ ] You tell me...
 
