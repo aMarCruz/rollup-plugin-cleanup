@@ -16,3 +16,7 @@ after_success: make sendcover
 
 notifications:
     email: false
+
+addons:
+    code_climate:
+        repo_token: c8ac7d4b83364b9c81e0417f6cee9db9aa965eeb7742a9b016dbd060d04275ea
