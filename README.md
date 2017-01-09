@@ -1,5 +1,5 @@
 [![Build Status][build-image]][build-url]
-[![AppVeyor Status][wbuild-image]][wbuild-url]
+[![Test Coverage][cover-image]][cover-url]
 [![npm Version][npm-image]][npm-url]
 [![License][license-image]][license-url]
 
@@ -91,21 +91,12 @@ This filter will preserve multiline comments starting with a dash, in addition t
 
 ```js
   ...
-  plugins; [
+  plugins: [
     cleanup({
       comments: ['eslint', /^\*-/]
     })
   ]
 ```
-
-## TODO
-
-This is work in progress, so please update cleanup constantly, I hope the first stable version does not take too long.
-
-- [x] 100% test coverage and more tests
-- [ ] async mode
-- [ ] Better documentation*
-- [ ] You tell me...
 
 ---
 
@@ -122,3 +113,9 @@ This is work in progress, so please update cleanup constantly, I hope the first 
 
 [license-image]:  https://img.shields.io/npm/l/express.svg?style=flat-square
 [license-url]:    https://github.com/aMarCruz/rollup-plugin-cleanup/blob/master/LICENSE
+
+[cover-image]:    https://img.shields.io/codeclimate/coverage/github/aMarCruz/rollup-plugin-cleanup.svg?style=flat-square
+[cover-url]:      https://codeclimate.com/github/aMarCruz/rollup-plugin-cleanup/coverage
+
+[issues-image]:		https://img.shields.io/codeclimate/issues/github/aMarCruz/rollup-plugin-cleanup.svg?style=flat-square
+[issues-url]:     https://codeclimate.com/github/aMarCruz/rollup-plugin-cleanup
