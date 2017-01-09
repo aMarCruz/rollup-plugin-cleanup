@@ -15,7 +15,7 @@ const space150 = new Array(151).join(' ')
  */
 export default function blankBlock (block) {
   return block.replace(/[^\n\r]+/g, m => {
-    let len = m.length
+    const len = m.length
     let str = space150
 
     while (str.length < len) str += space150

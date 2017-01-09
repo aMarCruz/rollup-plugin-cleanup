@@ -3,7 +3,7 @@ sudo: false
 language: node_js
 
 node_js:
-    - "6"
+    - "7"
     - "4.2"
     - "0.12"
 
@@ -11,6 +11,8 @@ branches:
     only:
         - master
         - dev
+
+after_success: make sendcover
 
 notifications:
     email: false

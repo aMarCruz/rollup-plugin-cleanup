@@ -40,7 +40,6 @@ rules:
     - 2
     - "all"
     - conditionalAssign: false
-      returnAssign: false
   no-unexpected-multiline: 2    # Avoid code that looks like two expressions but is actually one
   valid-jsdoc:
     - 2
@@ -94,11 +93,6 @@ rules:
   radix: 2                      # require use of the second argument for parseInt()
   wrap-iife: [2, "inside"]      # require immediate function invocation to be wrapped in parentheses
   yoda: [2, "never"]            # require or disallow Yoda conditions
-  #
-  #   STRICT MODE
-  #
-  #strict: [2, "global"]        # require run in strict mode
-  #strict: 2                    # require strict mode
   #
   #   VARIABLES
   #
@@ -181,3 +175,21 @@ rules:
     - 2
     - "always"
     - objectsInObjects: false     # require spaces inside brackets
+  #
+  #   ES6
+  #
+  arrow-spacing: 2
+  no-confusing-arrow: 2
+  no-duplicate-imports:
+    - 2
+    - includeExports: true
+  no-useless-computed-key: 2
+  no-useless-rename: 2
+  no-restricted-syntax:
+    - 2
+    - "ForOfStatement"
+  no-var: 2
+  prefer-const:
+    - 2
+    - destructuring: "all"
+  template-curly-spacing: 2

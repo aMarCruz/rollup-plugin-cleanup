@@ -1,0 +1,17 @@
+---
+engines:
+  fixme:
+    enabled: true
+    config:
+      strings:
+      - FIXME
+      - BUG
+
+engines:
+  eslint:
+    enabled: true
+
+ratings:
+  paths: ["dist/rollup-plugin-cleanup.js"]
+
+exclude_paths: ["src/**/*", "test/**/*", "lib/rollup-plugin-cleanup.es.*"]

@@ -6,6 +6,9 @@ function preproc (code) {
 function postproc (code) {
   return code
 }
+/*@preserve
+  main
+*/
 export default function jspp (options = {}) {
   var filter = function (id) {
     return id || __TEST ? __TEST : true

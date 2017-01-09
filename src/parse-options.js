@@ -21,30 +21,30 @@ const _filters = {
 }
 
 export default function parseOptions (options) {
-  if (!options) options = {}
 
   // multiple forms tu specify comment filters, default is 'some'
   let comments = options.comments
   if (comments == null) {
     comments = [_filters.some]
-  } else if (comments === 'all') {
-    comments = true
-  } else if (comments === 'none') {
-    comments = false
   } else if (typeof comments != 'boolean') {
-    let filters = Array.isArray(comments) ? comments : [comments]
+    const filters = Array.isArray(comments) ? comments : [comments]
     comments = []
-    filters.forEach(f => {
+    for (let i = 0; i < filters.length; i++) {
+      const f = filters[i]
       if (f instanceof RegExp) {
         comments.push(f)
-      } else if (typeof f != 'string') {
-        throw new Error('type mismatch in comment filter.')
+      } else if (f === 'all') {
+        comments = true
+        break
+      } else if (f === 'none') {
+        comments = false
+        break
       } else if (f in _filters) {
         comments.push(_filters[f])
       } else {
-        throw new Error(`unknown comments filter "${ f }"`)
+        throw new Error(`unknown comment filter: "${f}"`)
       }
-    })
+    }
   }
 
   let normalizeEols = options.hasOwnProperty('normalizeEols')
@@ -54,7 +54,7 @@ export default function parseOptions (options) {
   }
 
   return {
-    ecmaVersion: options.ecmaVersion || 6,
+    ecmaVersion: options.ecmaVersion || 8,
     sourceMap: options.sourceMap !== false,
     sourceType: options.sourceType || 'module',
     maxEmptyLines: options.maxEmptyLines | 0,

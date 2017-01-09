@@ -1,4 +1,3 @@
-/* eslint no-debugger:0 */
 
 import acorn from 'acorn'
 import blankBlock from './blank-block'
@@ -8,7 +7,7 @@ export default function preproc (magicStr, code, file, options) {
   const comments = options.comments
 
   if (comments === true) {
-    return code
+    return null
   }
 
   try {
@@ -25,7 +24,7 @@ export default function preproc (magicStr, code, file, options) {
   function blankComment (block, text, start, end) {
     if (comments !== false) {
       text = (block ? '*' : '/') + text
-      for (var i = 0; i < comments.length; i++) {
+      for (let i = 0; i < comments.length; i++) {
         if (comments[i].test(text)) return
       }
     }

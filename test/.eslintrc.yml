@@ -1,8 +1,13 @@
 env:
+  es6: false
   mocha: true
+
+parserOptions:
+  ecmaVersion: 5
 
 rules:
   max-len: 0
   no-console: 0
   no-debugger: 0
   no-new-func: 0
+  no-var: 0

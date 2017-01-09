@@ -10,9 +10,9 @@
 With *cleanup*, you have:
 
 * Removal of JavaScript comments through powerful filters (configurable)
+* Normalization of line endings (Unix, Mac, or Windows)
 * Empty lines compactation (configurable)
 * Remotion of trailing spaces
-* Normalization of line endings (Unix, Mac, or Windows)
 * Source Map support
 
 **IMPORTANT:**
@@ -48,16 +48,16 @@ rollup({
 
 That's it.
 
-By default, only the .js, .jsx, and .tag files are processed, but it can be useful for any non-binary file if you pass the option `comments='all'` to the plugin.
 You can restrict the accepted files using the options "include", "exclude", and "extensions" (see below).
+By default, only the .js, .jsx, and .tag files are processed, but it can be useful for any non-binary file if you skip the JS parsing by setting the option `comments: 'all'` in the plugin and `include` option with the desired extensions.
 
 ## Options
 
 Name | Default | Description
 ---- | ------- | -----------
-comments | `['some']` | Regex, array of filter names, "all" to keep all, or "none" to remove all.
-maxEmptyLines | `0` | Use a positive value or -1 to keep all the lines
-normalizeEols | `unix` | Allowed values: "unix", "mac", "win"
+comments | `'some'` | Filter or array of filter names and/or regexes. Use "all" to keep all, or "none" to remove all the comments.
+maxEmptyLines | `0` | Use a positive value or `-1` to keep all the lines.
+normalizeEols | `unix` | Allowed values: "unix", "mac", "win".
 sourceType | `'module'` | For the parser, change it to "script" if necessary.
 include    | `''` | [minimatch](https://github.com/isaacs/minimatch) or array of minimatch patterns for paths to include in the process.
 exclude    | `''` | minimatch or array of minimatch patterns for paths to exclude in the process.
@@ -65,7 +65,7 @@ extensions | `['.js', '.jsx', '.tag']` | String or array of strings with extensi
 
 \* Source Map support is given through the rollup `sourceMap` option.
 
-### Predefined Filters
+## Predefined Filters
 
 Name    | Regex | Site/Description
 --------|-------|-----------------
@@ -79,11 +79,30 @@ jscs    | `/^[\/\*]\s*jscs:[ed]/` | [jscs](http://jscs.info/overview)
 istanbul | `/^[\/\*]\s*istanbul\s/` | [istanbul](https://gotwarlost.github.io/istanbul/)
 srcmaps | `/^.[#@]\ssource(?:Mapping)?URL=/` | [Source Map](http://source-map.github.io/)
 
+### Custom Filters
+
+You can set custom filters through regexes that matches the content of the comments that you want to preserve
+(multiline comments begins with an asterisk (`*`), one-line comments begins with a slash (`/`)).
+
+
+**Example:**
+
+This filter will preserve multiline comments starting with a dash, in addition to eslint directives:
+
+```js
+  ...
+  plugins; [
+    cleanup({
+      comments: ['eslint', /^\*-/]
+    })
+  ]
+```
+
 ## TODO
 
 This is work in progress, so please update cleanup constantly, I hope the first stable version does not take too long.
 
-- [ ] 100% test coverage and more tests
+- [x] 100% test coverage and more tests
 - [ ] async mode
 - [ ] Better documentation*
 - [ ] You tell me...

@@ -11,14 +11,19 @@ import { extname } from 'path'
  *                         file matches the filter.
  */
 export default function _createFilter (opts) {
-  if (!opts) opts = {}
 
   const filt = createFilter(opts.include, opts.exclude)
 
   let exts = opts.extensions || ['.js', '.jsx', '.tag']
-  if (exts !== '*') {
-    if (!Array.isArray(exts)) exts = [exts]
-    exts = exts.map(e => e[0] !== '.' ? '.' + e : e)
+  if (!Array.isArray(exts)) exts = [exts]
+  for (let i = 0; i < exts.length; i++) {
+    const e = exts[i]
+    if (e === '*') {
+      exts = '*'
+      break
+    } else if (e[0] !== '.') {
+      exts[i] = '.' + e
+    }
   }
 
   return function (name) {

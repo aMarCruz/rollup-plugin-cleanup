@@ -1,15 +1,15 @@
 'use strict'
 
-const rollup = require('rollup').rollup
-const plugin = require('../')
-const expect = require('expect')
-const path   = require('path')
-const fs     = require('fs')
+var rollup = require('rollup').rollup
+var plugin = require('../')
+var expect = require('expect')
+var path   = require('path')
+var fs     = require('fs')
 
 process.chdir(__dirname)
 
 function concat (name, subdir) {
-  let file = path.join(__dirname, subdir || 'expected', name)
+  var file = path.join(__dirname, subdir || 'expected', name)
 
   file = file.replace(/\\/g, '/')
   if (!path.extname(file)) file += '.js'
@@ -17,15 +17,15 @@ function concat (name, subdir) {
 }
 
 function merge (dest, src) {
-  for (let p in src) {
+  for (var p in src) {
     if (src.hasOwnProperty(p)) dest[p] = src[p]
   }
-  return src
+  return dest
 }
 
 function testLines (code, expected, lines) {
-  let options = { comments: 'all', functions: false, debuggerStatements: false }
-  let result
+  var options = { comments: 'all', functions: false, debuggerStatements: false }
+  var result
   if (lines != null) {
     if (typeof lines == 'object') merge(options, lines)
     else options.maxEmptyLines = lines
@@ -34,26 +34,30 @@ function testLines (code, expected, lines) {
   expect(result == null ? null : result.code).toBe(expected)
 }
 
-function testFile (file, opts, save) {
-  let fname  = concat(file, 'fixtures')
-  let expected = fs.readFileSync(concat(file), 'utf8')
-  let code   = fs.readFileSync(fname, 'utf8')
+function testFile (file, opts, save, fexp) {
+  var fname  = concat(file, 'fixtures')
+  var expected = fexp === null ? null : fs.readFileSync(concat(fexp || file), 'utf8')
+  var code   = fs.readFileSync(fname, 'utf8')
 
-  let result = plugin(opts).transform(code, fname)
-  if (save) fs.writeFileSync(concat(file + '_out'), result.code, 'utf8')
+  var result = plugin(opts).transform(code, fname)
+  if (save && result) fs.writeFileSync(concat(file + '_out'), result.code, 'utf8')
 
-  expect(result == null ? null : result.code).toBe(expected)
+  if (expected == null) {
+    expect(result == null).toBe(true)
+  } else {
+    expect(typeof result.code == 'string' ? result.code : result).toBe(expected)
+  }
 }
 
 
-describe('rollup-plugin-cleanup', () => {
+describe('rollup-plugin-cleanup', function () {
 
-  const emptyLines10 = '\n\n\n\n\n\n\n\n\n\n'
-  const emptyLinesTop = emptyLines10 + 'X'
-  const emptyLinesBottom = 'X' + emptyLines10
-  const emptyLinesMiddle = emptyLines10 + 'X' + emptyLines10 + 'X' + emptyLines10
+  var emptyLines10 = '\n\n\n\n\n\n\n\n\n\n'
+  var emptyLinesTop = emptyLines10 + 'X'
+  var emptyLinesBottom = 'X' + emptyLines10
+  var emptyLinesMiddle = emptyLines10 + 'X' + emptyLines10 + 'X' + emptyLines10
 
-  it('by default removes all the empty lines and normalize to unix', () => {
+  it('by default removes all the empty lines and normalize to unix', function () {
     testLines([
       '',
       'abc ',
@@ -64,11 +68,11 @@ describe('rollup-plugin-cleanup', () => {
     ].join('\n'), 'abc\nx\ny\nz')
   })
 
-  it('do not touch current indentation of non-empty lines', () => {
+  it('do not touch current indentation of non-empty lines', function () {
     testLines('  \n X\n  X ', ' X\n  X')
   })
 
-  it('has fine support for empty lines with `maxEmptyLines`', () => {
+  it('has fine support for empty lines with `maxEmptyLines`', function () {
     testLines(emptyLinesTop, 'X')
     testLines(emptyLinesBottom, 'X\n')
 
@@ -81,49 +85,122 @@ describe('rollup-plugin-cleanup', () => {
     testLines(emptyLinesMiddle, '\n\n\nX\n\n\n\nX\n\n\n\n', 3)
   })
 
-  it('can keep all the lines by setting `maxEmptyLines` = -1', () => {
+  it('can keep all the lines by setting `maxEmptyLines` = -1', function () {
     testLines(emptyLinesTop, null, -1)
     testLines(emptyLinesBottom, null, -1)
     testLines(emptyLinesMiddle, null, -1)
   })
 
-  it('can convert to Windows line-endings with `normalizeEols` = "win"', () => {
-    const opts = { maxEmptyLines: 1, normalizeEols: 'win' }
+  it('can convert to Windows line-endings with `normalizeEols` = "win"', function () {
+    var opts = { maxEmptyLines: 1, normalizeEols: 'win' }
     testLines(emptyLinesTop, '\r\nX', opts)
     testLines(emptyLinesBottom, 'X\r\n\r\n', opts)
     testLines(emptyLinesMiddle, '\r\nX\r\n\r\nX\r\n\r\n', opts)
   })
 
-  it('and convertion to Mac line-endings with `normalizeEols` = "mac"', () => {
-    const opts = { maxEmptyLines: 1, normalizeEols: 'mac' }
+  it('and convertion to Mac line-endings with `normalizeEols` = "mac"', function () {
+    var opts = { maxEmptyLines: 1, normalizeEols: 'mac' }
     testLines(emptyLinesTop, '\rX', opts)
     testLines(emptyLinesBottom, 'X\r\r', opts)
     testLines(emptyLinesMiddle, '\rX\r\rX\r\r', opts)
   })
 
-  it('makes normalization to the desired `normalizeEols` lines', () => {
-    const opts = { maxEmptyLines: -1, normalizeEols: 'mac' }
+  it('makes normalization to the desired `normalizeEols` line-endings', function () {
+    var opts = { maxEmptyLines: -1, normalizeEols: 'mac' }
     testLines('\r\n \n\r \r\r\n \r\r \n', '\r\r\r\r\r\r\r\r', opts)
+  })
+
+  it('handles ES7', function () {
+    testFile('es7')
+  })
+
+  it('skip source map generation with `sourceMap: false`', function () {
+    var fname  = concat('defaults', 'fixtures')
+    var code   = fs.readFileSync(fname, 'utf8')
+    var result = plugin({ sourceMap: false }).transform(code, fname)
+
+    expect(result.map == null).toBe(true)
+  })
+
+  it('throws on Acorn errors', function () {
+    var fname  = concat('with_error', 'fixtures')
+    var code   = fs.readFileSync(fname, 'utf8')
+
+    expect(function () {
+      plugin().transform(code, fname)
+    }).toThrow()
   })
 })
 
 
-describe('removing comments', () => {
-  it('with some defaults', () => {
+describe('removing comments', function () {
+  it('with `comments: ["some", "eslint"]', function () {
     testFile('defaults', {
       comments: ['some', 'eslint']
     })
+  })
+
+  it('with `comments: "none"`', function () {
+    testFile('defaults', { comments: 'none' }, false, 'comments_none')
+  })
+
+  it('with `comments: false`', function () {
+    testFile('defaults', { comments: false }, false, 'comments_none')
+  })
+
+  it('with `comments: true`', function () {
+    testFile('defaults', { comments: true }, false, 'comments_all')
+  })
+
+  it('with `comments: /@preserve/`', function () {
+    testFile('defaults', { comments: /@preserve/ }, false, 'comments_regex')
+  })
+
+  it('with long comments', function () {
+    testFile('long_comment')
+  })
+
+  it('with no changes due normalization nor emptyLines', function () {
+    testFile('comments')
+  })
+
+  it('throws on unknown filters', function () {
+    var fname  = concat('comments', 'fixtures')
+    var code   = fs.readFileSync(fname, 'utf8')
+
+    expect(function () {
+      plugin({ comments: 'foo' }).transform(code, fname)
+    }).toThrow()
+  })
+})
+
+
+describe('extension handling', function () {
+  it('with `extensions: ["*"] must process all extensions', function () {
+    testFile('extensions.foo', {
+      extensions: ['*']
+    })
+  })
+
+  it('with specific `extensions` must process given extensions', function () {
+    testFile('extensions.foo', {
+      extensions: 'foo'
+    })
+  })
+
+  it('must skip non listed extensions', function () {
+    testFile('comments', { extensions: 'foo' }, false, null)
   })
 })
 
 
 describe('Support for post-procesing', function () {
 
-  it('of .jsx files (issue #1)', () => {
-    const jsx = require('rollup-plugin-jsx')
+  it('of .jsx files (issue #1)', function () {
+    var jsx = require('rollup-plugin-jsx')
 
     return rollup({
-      entry: 'fixtures/issue-1.jsx',
+      entry: 'fixtures/issue_1.jsx',
       plugins: [
         jsx({
           factory: 'React.createElement'
@@ -134,14 +211,14 @@ describe('Support for post-procesing', function () {
       ],
       external: ['react']
     }).then(function (bundle) {
-      let result = bundle.generate({ format: 'cjs' })
+      var result = bundle.generate({ format: 'cjs' })
       expect(result.code).toMatch(/module.exports/).toNotMatch(/to_be_removed/)
       return result
     })
   })
 
-  it('of riot .tag files', () => {
-    const riot = require('rollup-plugin-riot')
+  it('of riot .tag files', function () {
+    var riot = require('rollup-plugin-riot')
 
     return rollup({
       entry: 'fixtures/todo.tag',
@@ -152,7 +229,7 @@ describe('Support for post-procesing', function () {
       ],
       external: ['riot']
     }).then(function (bundle) {
-      let result = bundle.generate({ format: 'cjs' })
+      var result = bundle.generate({ format: 'cjs' })
       expect(result.code).toMatch(/riot\.tag2\(/)
       return result
     })
@@ -161,9 +238,9 @@ describe('Support for post-procesing', function () {
 })
 
 
-describe('SourceMap support', () => {
+describe('SourceMap support', function () {
 
-  it('test bundle generated by rollup w/inlined sourcemap', () => {
+  it('test bundle generated by rollup w/inlined sourcemap', function () {
     return rollup({
       entry: concat('bundle-src.js', 'maps'),
       sourceMap: true,
@@ -173,7 +250,7 @@ describe('SourceMap support', () => {
         })
       ]
     }).then(function (bundle) {
-      let result = bundle.generate({
+      var result = bundle.generate({
         format: 'iife',
         indent: true,
         moduleName: 'myapp',
@@ -182,16 +259,16 @@ describe('SourceMap support', () => {
         banner: '/*\n plugin version 1.0\n*/',
         footer: '/* follow me on Twitter! @amarcruz */'
       })
-      let code = result.code + '\n//# source' + 'MappingURL=' + result.map.toUrl()
+      var code = result.code + '\n//# source' + 'MappingURL=' + result.map.toUrl()
 
       /*
         If you modified the source in maps/bundle-src.js, you
         need to write the bundle and test it in the browser again.
       */
       //console.log('\t--- writing bundle with inlined sourceMap...')
-      //fs.writeFileSync(concat('bundle', 'maps'), code, 'utf8')
+      fs.writeFileSync(concat('bundle', 'maps'), code, 'utf8')
 
-      let expected = fs.readFileSync(concat('bundle', 'maps'), 'utf8')
+      var expected = fs.readFileSync(concat('bundle', 'maps'), 'utf8')
       expect(code).toBe(expected, 'Genereted code is incorrect!')
     })
   })

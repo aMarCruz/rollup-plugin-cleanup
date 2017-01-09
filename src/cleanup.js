@@ -8,13 +8,13 @@ export default function transform (code, file, options) {
 
   const magicStr = new MagicString(code)
 
-  code = preproc(magicStr, code, file, options)
+  const code2 = preproc(magicStr, code, file, options)
 
-  if (postproc(magicStr, code, file, options)) {
+  if (postproc(magicStr, code2 || code, file, options)) {
     return {
       code: magicStr.toString(),
       map: options.sourceMap ? magicStr.generateMap({ hires: true }) : null
     }
   }
-  return null
+  return code2
 }

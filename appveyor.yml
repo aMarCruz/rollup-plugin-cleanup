@@ -13,6 +13,7 @@ environment:
   # node.js
   - nodejs_version: "0.12"
   - nodejs_version: "4"
+  - nodejs_version: "7"
 
 matrix:
   fast_finish: false

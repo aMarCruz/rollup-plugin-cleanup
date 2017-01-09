@@ -1,3 +1,13 @@
+# rollup-plugin-cleanup changes
+
+### v1.0.0
+- Improved regex to detect empty lines.
+- Fixed minor bug not processing the input when there's no empty spaces or lines to remove.
+- Fixed tests to match rollup v0.40.x output.
+- Changed default Acorn `ecmaVersion` from 6 to 7 to allow parsing ES2017 (See [rollup#492](https://github.com/rollup/rollup/issues/492)).
+- Updated devDependencies.
+- 100% test coverage.
+
 ### v0.1.4
 - Default `extensions` are changed from `"*"` to `['.js', '.jsx', '.tag']` to avoid conflicts with other plugins.
 - The `extensions` option is case-sensitive by consistency with rollup plugins.
