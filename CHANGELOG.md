@@ -1,5 +1,15 @@
 # rollup-plugin-cleanup changes
 
+### v1.0.1
+- New filter `"ts3s"` to preserve TypeScript [Triple-Slash Directives](https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html) (See NOTE)
+- Closes #5 : cleanup didn't generate a sourcemap for the transformation.
+- Some refactorization to speed up some operations.
+- Updated devDependencies.
+
+*NOTE:*
+
+TypeScript source must be already compiled to JavaScript.
+
 ### v1.0.0
 - Improved regex to detect empty lines.
 - Fixed minor bug not processing the input when there's no empty spaces or lines to remove.

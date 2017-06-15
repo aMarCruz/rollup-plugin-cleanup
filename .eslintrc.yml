@@ -6,14 +6,12 @@ root: true
 
 env:
   node: true
-  es6: true
-
-ecmaFeatures:
-  modules: true
 
 parserOptions:
   ecmaVersion: 6
   sourceType: "module"
+  ecmaFeatures:
+    modules: true
 
   ###########################################################################
   #   GLOBALS                                                               #
@@ -26,7 +24,7 @@ parserOptions:
   #   RECOMMENDED PRESET - mainly for possible errors                       #
   ###########################################################################
 
-extends: "eslint:recommended"   # See https://github.com/eslint/eslint/blob/master/conf/eslint.json
+extends: "eslint:recommended"
 
   ###########################################################################
   #   RULES - omitted defaults and rules in eslint:recommended              #
@@ -165,7 +163,10 @@ rules:
   semi-spacing: 2                 # prevents the use of spaces before a semicolon in expressions
   semi: [2, "never"]              # require or disallow use of semicolons instead of ASI
   space-before-blocks: 2          # require a space before blocks
-  space-before-function-paren: 2  # require a space before function parenthesis
+  space-before-function-paren:    # require a space before function parenthesis
+    - 2
+    - anonymous: "always"
+      named: "never"
   space-in-parens: 2              # disallow spaces inside parentheses expect for '()'
   space-infix-ops:
     - 2

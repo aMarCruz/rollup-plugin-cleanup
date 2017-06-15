@@ -1,3 +1,4 @@
+/* eslint no-useless-escape:0 */
 
 const _filters = {
   // only preserve license
@@ -7,20 +8,22 @@ const _filters = {
   // http://usejsdoc.org/
   jsdoc:    /^\*\*[^@]*@[A-Za-z]/,
   // http://www.jslint.com/help.html
-  jslint:   /^[\/\*](?:jslint|global|property)\b/,
+  jslint:   /^[/\*](?:jslint|global|property)\b/,
   // http://jshint.com/docs/#inline-configuration
-  jshint:   /^[\/\*]\s*(?:jshint|globals|exported)\s/,
+  jshint:   /^[/\*]\s*(?:jshint|globals|exported)\s/,
   // http://eslint.org/docs/user-guide/configuring
-  eslint:   /^[\/\*]\s*(?:eslint(?:\s|-env|-disable|-enable)|global\s)/,
+  eslint:   /^[/\*]\s*(?:eslint(?:\s|-env|-disable|-enable)|global\s)/,
+  // https://palantir.github.io/tslint/usage/rule-flags/
+  ts3s:     /^\/\/[ \t]*<(?:reference\s|amd-).*>/,
   // http://jscs.info/overview
-  jscs:     /^[\/\*]\s*jscs:[ed]/,
+  jscs:     /^[/\*]\s*jscs:[ed]/,
   // https://gotwarlost.github.io/istanbul/
-  istanbul: /^[\/\*]\s*istanbul\s/,
+  istanbul: /^[/\*]\s*istanbul\s/,
   // http://www.html5rocks.com/en/tutorials/developertools/sourcemaps/
   srcmaps:  /^.[#@]\ssource(?:Mapping)?URL=/
 }
 
-export default function parseOptions (options) {
+export default function (options) {
 
   // multiple forms tu specify comment filters, default is 'some'
   let comments = options.comments

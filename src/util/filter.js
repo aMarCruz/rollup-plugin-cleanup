@@ -10,7 +10,7 @@ import { extname } from 'path'
  * @returns {function}     Filter function that returns true if a given
  *                         file matches the filter.
  */
-export default function _createFilter (opts) {
+export default function _createFilter(opts) {
 
   const filt = createFilter(opts.include, opts.exclude)
 

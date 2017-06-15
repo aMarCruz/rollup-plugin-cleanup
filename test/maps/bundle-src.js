@@ -5,7 +5,7 @@
 */
 /* eslint-disable no-undef */
 
-var __TEST = 1
+const __TEST = 1
 
 
 function preproc (code) {
@@ -20,9 +20,7 @@ function postproc (code) {
 
 export default function jspp (options = {}) {
 
-  var filter = function (id) {
-    return id || __TEST ? __TEST : true
-  }
+  const filter = id => id || __TEST
 
   return {
 
@@ -32,7 +30,7 @@ export default function jspp (options = {}) {
 
     // comment
 
-    run: function (code, id) {
+    run(code, id) {
       if (typeof code != 'string') {
         code = '__CODE'
       }

@@ -9,7 +9,7 @@
 
 With *cleanup*, you have:
 
-* Removal of JavaScript comments through powerful filters (configurable)
+* Removal of JavaScript comments through powerful filters (configurable)\*
 * Normalization of line endings (Unix, Mac, or Windows)
 * Empty lines compactation (configurable)
 * Remotion of trailing spaces
@@ -63,7 +63,7 @@ include    | `''` | [minimatch](https://github.com/isaacs/minimatch) or array of
 exclude    | `''` | minimatch or array of minimatch patterns for paths to exclude in the process.
 extensions | `['.js', '.jsx', '.tag']` | String or array of strings with extensions of files to process.
 
-\* Source Map support is given through the rollup `sourceMap` option.
+\* Source Map support is given through the Rollup `sourceMap` option.
 
 ## Predefined Filters
 
@@ -72,11 +72,12 @@ Name    | Regex | Site/Description
 license | `/@license\b/` | Preserve comments with `"@license"` inside.
 some    | `/(?:@license|@preserve|@cc_on)\b/` | Like the [uglify](https://github.com/mishoo/UglifyJS2) default
 jsdoc   | `/^\*\*[^@]*@[A-Za-z]/` | [JSDoc](http://usejsdoc.org/)
-jslint  | `/^[\/\*](?:jslint|global|property)\b/` | [JSLint](http://www.jslint.com/help.html)
-jshint  | `/^[\/\*]\s*(?:jshint|globals|exported)\s/` | [JSHint](http://jshint.com/docs/#inline-configuration)
-eslint  | `/^[\/\*]\s*(?:eslint(?:\s|-env|-disable|-enable)|global\s)/` | [ESLint](http://eslint.org/docs/user-guide/configuring)
-jscs    | `/^[\/\*]\s*jscs:[ed]/` | [jscs](http://jscs.info/overview)
-istanbul | `/^[\/\*]\s*istanbul\s/` | [istanbul](https://gotwarlost.github.io/istanbul/)
+jslint  | `/^[/\*](?:jslint|global|property)\b/` | [JSLint](http://www.jslint.com/help.html)
+jshint  | `/^[/\*]\s*(?:jshint|globals|exported)\s/` | [JSHint](http://jshint.com/docs/#inline-configuration)
+eslint  | `/^[/\*]\s*(?:eslint(?:\s|-env|-disable|-enable)|global\s)/` | [ESLint](http://eslint.org/docs/user-guide/configuring)
+ts3s:   | `/^\/\/[ \t]*<(?:reference\s|amd-).*>/` | TypeScript [Triple-Slash Directives](https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html)
+jscs    | `/^[/\*]\s*jscs:[ed]/` | [jscs](http://jscs.info/overview)
+istanbul | `/^[/\*]\s*istanbul\s/` | [istanbul](https://gotwarlost.github.io/istanbul/)
 srcmaps | `/^.[#@]\ssource(?:Mapping)?URL=/` | [Source Map](http://source-map.github.io/)
 
 ### Custom Filters
@@ -97,6 +98,17 @@ This filter will preserve multiline comments starting with a dash, in addition t
     })
   ]
 ```
+
+
+### What's New
+
+- New filter `"ts3s"` to preserve TypeScript [Triple-Slash Directives](https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html) (See NOTE)
+- Closes #5 : cleanup didn't generate a sourcemap for the transformation.
+
+*NOTE:*
+
+TypeScript source must be already compiled to JavaScript.
+
 
 ---
 
