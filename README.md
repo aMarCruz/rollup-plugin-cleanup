@@ -65,20 +65,22 @@ extensions | `['.js', '.jsx', '.tag']` | String or array of strings with extensi
 
 \* Source Map support is given through the Rollup `sourceMap` option.
 
-## Predefined Filters
+## Predefined Comment Filters
 
-Name    | Regex | Site/Description
---------|-------|-----------------
-license | `/@license\b/` | Preserve comments with `"@license"` inside.
-some    | `/(?:@license|@preserve|@cc_on)\b/` | Like the [uglify](https://github.com/mishoo/UglifyJS2) default
-jsdoc   | `/^\*\*[^@]*@[A-Za-z]/` | [JSDoc](http://usejsdoc.org/)
-jslint  | `/^[/\*](?:jslint|global|property)\b/` | [JSLint](http://www.jslint.com/help.html)
-jshint  | `/^[/\*]\s*(?:jshint|globals|exported)\s/` | [JSHint](http://jshint.com/docs/#inline-configuration)
-eslint  | `/^[/\*]\s*(?:eslint(?:\s|-env|-disable|-enable)|global\s)/` | [ESLint](http://eslint.org/docs/user-guide/configuring)
-ts3s:   | `/^\/\/[ \t]*<(?:reference\s|amd-).*>/` | TypeScript [Triple-Slash Directives](https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html)
-jscs    | `/^[/\*]\s*jscs:[ed]/` | [jscs](http://jscs.info/overview)
-istanbul | `/^[/\*]\s*istanbul\s/` | [istanbul](https://gotwarlost.github.io/istanbul/)
-srcmaps | `/^.[#@]\ssource(?:Mapping)?URL=/` | [Source Map](http://source-map.github.io/)
+Se the regexes in [src/parse-options.js](https://github.com/aMarCruz/rollup-plugin-cleanup/blob/master/src/parse-options.js)
+
+Name    | Site/Description
+--------|-----------------
+license | Preserve comments with "@license" inside.
+some    | Like the [uglify](https://github.com/mishoo/UglifyJS2) default: "@license", "@preserve", "@cc_on"
+jsdoc   | [JSDoc](http://usejsdoc.org/) tags
+jslint  | [JSLint](http://www.jslint.com/help.html) directives
+jshint  | [JSHint](http://jshint.com/docs/#inline-configuration) directives
+eslint  | [ESLint](http://eslint.org/docs/user-guide/configuring) directives
+ts3s:   | TypeScript [Triple-Slash Directives](https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html)
+jscs    | [jscs](http://jscs.info/overview) instructions
+istanbul | [istanbul](https://gotwarlost.github.io/istanbul/) comments
+srcmaps | [Source Map](http://source-map.github.io/) (inlined or external)
 
 ### Custom Filters
 
