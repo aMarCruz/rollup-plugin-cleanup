@@ -1,11 +1,12 @@
-/**
- * rollup-plugin-cleanup
- * @module
- */
-import createFilter from './util/filter'
+import createFilter from './create-filter'
 import parseOptions from './parse-options'
 import cleanup from './cleanup'
 
+/**
+ * Returns the rollup-plugin-cleanup instance.
+ * @param   {Object} options - Plugin's user options
+ * @returns {Object} Plugin instance.
+ */
 export default function rollupCleanup(options) {
   if (!options) options = {}
 
@@ -13,14 +14,35 @@ export default function rollupCleanup(options) {
   const filter = createFilter(options)
 
   // validate and clone the plugin options
-  const opts = parseOptions(options)
+  options = parseOptions(options)
 
+  // the plugin instance
   return {
 
     name: 'cleanup',
 
+    options(opts) {
+      if (opts.sourceMap === false || opts.sourcemap === false) {
+        options.sourceMap = false
+      }
+    },
+
     transform(code, id) {
-      return filter(id) ? cleanup(code, id, opts) : null
+
+      if (filter(id)) {
+
+        return cleanup(code, id, options)
+          .catch(err => {
+            if (typeof this.error == 'function') {
+              this.error(err)
+            } else {
+              throw new Error(err)
+            }
+          })
+
+      }
+
+      return null
     }
   }
 }

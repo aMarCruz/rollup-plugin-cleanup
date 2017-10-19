@@ -27,7 +27,6 @@ export default function _createFilter(opts) {
   }
 
   return function (name) {
-    return filt(name) &&
-      (exts === '*' || exts.indexOf(extname(name)) > -1)
+    return filt(name) && (exts === '*' || exts.indexOf(extname(name)) > -1)
   }
 }

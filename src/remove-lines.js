@@ -4,10 +4,9 @@ const FIRST_LINES = /^(\s*[\r\n])\s*\S/
 const EACH_LINE   = /.*(?:\r\n?|\n)/g
 const TRIM_SPACES = /[^\S\r\n]+$/
 
-export default function (magicStr, code, file, options) {
+export default function removeLines(magicStr, code, file, options) {
 
   // matches one or more line endings and their leading spaces
-  // (creating the regex here avoids set the lastIndex to 0)
   const NEXT_LINES = /\s*[\r\n]/g
 
   const eolTo   = EOL_TYPES[options.normalizeEols]
@@ -17,20 +16,26 @@ export default function (magicStr, code, file, options) {
   let match, block
   let changes = false
 
-  // helpers ==============================================
+  // Helpers
+  // -------
 
-  const replaceBlock = function (str, start, rep) {
+  const replaceBlock = (str, start, rep) => {
     if (str !== rep) {
       magicStr.overwrite(start, start + str.length, rep)
       changes = true
     }
   }
 
-  const limitLines = function (str) {
+  const limitLines = (str) => {
     let ss = str.replace(EACH_LINE, eolTo)
-    if (ss.length > maxEolChars) ss = ss.slice(0, maxEolChars)
+    if (ss.length > maxEolChars) {
+      ss = ss.slice(0, maxEolChars)
+    }
     return ss
   }
+
+  // Lines remotion
+  // --------------
 
   // first empty lines
   match = code.match(FIRST_LINES)

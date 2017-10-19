@@ -44,7 +44,7 @@ function blankBlock(block) {
  * @prop {boolean|RegExp[]} options.comments - Comment filters
  * @returns {string} The processed code
  */
-export default function (code, file, options) {
+export default function blankComments(code, file, options) {
   const comments = options.comments
 
   const onComment = function (block, text, start, end) {
@@ -60,16 +60,11 @@ export default function (code, file, options) {
 
   // Now replace the comments. As blankComment will not change code
   // positions, trimming empty lines will be easy.
-  try {
-    acorn.parse(code, {
-      ecmaVersion: options.ecmaVersion,
-      sourceType: options.sourceType,
-      onComment
-    })
-  } catch (err) {
-    err.message += ` in ${file}`
-    throw err
-  }
+  acorn.parse(code, {
+    ecmaVersion: options.ecmaVersion,
+    sourceType: options.sourceType,
+    onComment
+  })
 
   return code
 }

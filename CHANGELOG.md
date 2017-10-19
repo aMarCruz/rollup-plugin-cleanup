@@ -1,5 +1,13 @@
 # rollup-plugin-cleanup changes
 
+### v2.0.0
+- Requires node v4.2 or later.
+- Supports new rollup `sourcemap` option (lowercased) in addition to `sourceMap`.
+- Generated errors are displayed through Rollup's `error` method.
+- Fixed tests to match rollup v0.48.x parameters and async operation.
+- Now the plugin operation is async and returns a Promise.
+- Using facebook [jest](http://facebook.github.io/jest/) for tests.
+
 ### v1.0.1
 - New filter `"ts3s"` to preserve TypeScript [Triple-Slash Directives](https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html) (See NOTE)
 - Closes #5 : cleanup didn't generate a sourcemap for the transformation.

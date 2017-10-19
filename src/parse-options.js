@@ -23,9 +23,9 @@ const _filters = {
   srcmaps:  /^.[#@]\ssource(?:Mapping)?URL=/
 }
 
-export default function (options) {
+export default function parseOptions(options) {
 
-  // multiple forms tu specify comment filters, default is 'some'
+  // multiple forms to specify comment filters, default is 'some'
   let comments = options.comments
   if (comments == null) {
     comments = [_filters.some]
@@ -45,7 +45,7 @@ export default function (options) {
       } else if (f in _filters) {
         comments.push(_filters[f])
       } else {
-        throw new Error(`unknown comment filter: "${f}"`)
+        throw new Error(`cleanup: unknown comment filter: "${f}"`)
       }
     }
   }
@@ -58,7 +58,7 @@ export default function (options) {
 
   return {
     ecmaVersion: options.ecmaVersion || 8,
-    sourceMap: options.sourceMap !== false,
+    sourceMap: options.sourceMap !== false && options.sourcemap !== false,
     sourceType: options.sourceType || 'module',
     maxEmptyLines: options.maxEmptyLines | 0,
     normalizeEols,

@@ -1,9 +1,5 @@
 env:
-  es6: false
-  mocha: true
-
-parserOptions:
-  ecmaVersion: 5
+  jest: true
 
 rules:
   max-len: 0
