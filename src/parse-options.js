@@ -51,7 +51,7 @@ export default function parseOptions(options) {
   }
 
   let normalizeEols = options.hasOwnProperty('normalizeEols')
-                    ? options.normalizeEols : options.eolType
+    ? options.normalizeEols : options.eolType
   if (normalizeEols !== false && normalizeEols !== 'win' && normalizeEols !== 'mac') {
     normalizeEols = 'unix'
   }
