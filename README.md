@@ -9,11 +9,13 @@
 
 With *cleanup*, you have:
 
-* Removal of JavaScript comments through powerful filters (configurable)\*
+* Removal of JavaScript comments through powerful filters (configurable)
 * Normalization of line endings (Unix, Mac, or Windows)
 * Empty lines compactation (configurable)
 * Remotion of trailing spaces
 * Source Map support
+
+Please see [Whats New](#whats-new), cleanup v2.0.0 requires node v4.2 or above.
 
 **IMPORTANT:**
 
@@ -38,7 +40,7 @@ import awesome from 'rollup-plugin-awesome';
 import cleanup from 'rollup-plugin-cleanup';
 
 rollup({
-  entry: 'src/main.js',
+  input: 'src/main.js',
   plugins: [
     awesome(),        // other plugins
     cleanup()         // cleanup here
@@ -48,8 +50,8 @@ rollup({
 
 That's it.
 
-You can restrict the accepted files using the options "include", "exclude", and "extensions" (see below).
-By default, only the .js, .jsx, and .tag files are processed, but it can be useful for any non-binary file if you skip the JS parsing by setting the option `comments: 'all'` in the plugin and `include` option with the desired extensions.
+You can restrict the accepted files using the options `include`, `exclude`, and `extensions` (see below).
+By default, only the .js, .jsx, and .tag files are processed, but it can be useful for any non-binary file if you skip the JS parsing by setting `comments` to "all" and the `include` option to the desired extensions.
 
 ## Options
 
@@ -58,20 +60,20 @@ Name | Default | Description
 comments | `'some'` | Filter or array of filter names and/or regexes. Use "all" to keep all, or "none" to remove all the comments.
 maxEmptyLines | `0` | Use a positive value or `-1` to keep all the lines.
 normalizeEols | `unix` | Allowed values: "unix", "mac", "win".
-sourceType | `'module'` | For the parser, change it to "script" if necessary.
+sourceType | `'module'` | For the JS parser, change it to "script" if necessary.
 include    | `''` | [minimatch](https://github.com/isaacs/minimatch) or array of minimatch patterns for paths to include in the process.
-exclude    | `''` | minimatch or array of minimatch patterns for paths to exclude in the process.
+exclude    | `''` | minimatch or array of minimatch patterns for paths to exclude of the process.
 extensions | `['.js', '.jsx', '.tag']` | String or array of strings with extensions of files to process.
 
-\* Source Map support is given through the Rollup `sourceMap` option.
+\* Emission of source map honors the Rollup `sourceMap` or `sourcemap` (lowercased) options.
 
 ## Predefined Comment Filters
 
-Se the regexes in [src/parse-options.js](https://github.com/aMarCruz/rollup-plugin-cleanup/blob/master/src/parse-options.js)
+See the regexes in [src/parse-options.js](https://github.com/aMarCruz/rollup-plugin-cleanup/blob/master/src/parse-options.js)
 
 Name    | Site/Description
 --------|-----------------
-license | Preserve comments with "@license" inside.
+license | Preserve comments with the word "@license" inside.
 some    | Like the [uglify](https://github.com/mishoo/UglifyJS2) default: "@license", "@preserve", "@cc_on"
 jsdoc   | [JSDoc](http://usejsdoc.org/) tags
 jslint  | [JSLint](http://www.jslint.com/help.html) directives
@@ -104,17 +106,18 @@ This filter will preserve multiline comments starting with a dash, in addition t
 
 ### What's New
 
-- New filter `"ts3s"` to preserve TypeScript [Triple-Slash Directives](https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html) (See NOTE)
-- Closes #5 : cleanup didn't generate a sourcemap for the transformation.
+- Requires node v4.2 or later.
+- Emission of source map honors the Rollup `sourceMap` or `sourcemap` (lowercased) options.
+- Generated errors are displayed through the standard Rollup's `error` method.
+- Fixed tests to match rollup v0.48.x parameters and async operation.
+- Now the plugin operation is async and returns a Promise.
+- Using facebook [jest](http://facebook.github.io/jest/) for tests.
 
-*NOTE:*
-
-TypeScript source must be already compiled to JavaScript.
 
 
 ---
 
-\* _For me, write in english is 10x harder than coding JS, so contributions are welcome..._
+\* _Contributions and stars are welcome..._
 
 [build-image]:    https://img.shields.io/travis/aMarCruz/rollup-plugin-cleanup/master.svg?style=flat-square
 [build-url]:      https://travis-ci.org/aMarCruz/rollup-plugin-cleanup

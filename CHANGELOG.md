@@ -2,8 +2,8 @@
 
 ### v2.0.0
 - Requires node v4.2 or later.
-- Supports new rollup `sourcemap` option (lowercased) in addition to `sourceMap`.
-- Generated errors are displayed through Rollup's `error` method.
+- Emission of source map honors the Rollup `sourceMap` or `sourcemap` (lowercased) options.
+- Generated errors are displayed through the standard Rollup's `error` method.
 - Fixed tests to match rollup v0.48.x parameters and async operation.
 - Now the plugin operation is async and returns a Promise.
 - Using facebook [jest](http://facebook.github.io/jest/) for tests.
