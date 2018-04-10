@@ -1,5 +1,4 @@
 [![Build Status][build-image]][build-url]
-[![Test Coverage][cover-image]][cover-url]
 [![npm Version][npm-image]][npm-url]
 [![License][license-image]][license-url]
 
@@ -12,7 +11,7 @@ With *cleanup*, you have:
 * Removal of JavaScript comments through powerful filters (configurable)
 * Normalization of line endings (Unix, Mac, or Windows)
 * Empty lines compactation (configurable)
-* Remotion of trailing spaces
+* Remotion of trailing spaces preserving ES6 Template Literal Strings
 * Source Map support
 
 Please see [Whats New](#whats-new), cleanup v2.0.0 requires node v4.2 or above.
@@ -106,14 +105,11 @@ This filter will preserve multiline comments starting with a dash, in addition t
 
 ### What's New
 
-- Requires node v4.2 or later.
-- Emission of source map honors the Rollup `sourceMap` or `sourcemap` (lowercased) options.
-- Generated errors are displayed through the standard Rollup's `error` method.
-- Fixed tests to match rollup v0.48.x parameters and async operation.
-- Now the plugin operation is async and returns a Promise.
-- Using facebook [jest](http://facebook.github.io/jest/) for tests.
+- Adds rollup >=0.50 as peerDependencies, hope to update devDependencies soon\*.
+- Preserves empty lines inside ES6 Template Literal Strings, thanks to @mkhl.
+- Welcome to @mkhl to the rollup-plugin-cleanup team!
 
-
+\* MagicString v0.24.x has great enhancements, but it needs testing with this plugin.
 
 ---
 

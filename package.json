@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-cleanup",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Rollup plugin to trim trailing spaces, compact empty lines, and normalize line endings",
   "main": "dist/rollup-plugin-cleanup.js",
   "module": "dist/rollup-plugin-cleanup.es.js",
@@ -54,5 +54,8 @@
     "rollup-plugin-buble": "^0.16.0",
     "rollup-plugin-jsx": "^1.0.3",
     "rollup-plugin-riot": "^1.1.0"
+  },
+  "peerDependencies": {
+    "rollup": ">=0.50.0"
   }
 }

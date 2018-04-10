@@ -1,7 +1,11 @@
 # rollup-plugin-cleanup changes
 
 ### v2.0.1
+- Adds rollup >=0.50 as peerDependencies, hope to update devDependencies soon\*.
 - Preserves empty lines inside multi-line strings.
+- Welcome to @mkhl to the rollup-plugin-cleanup team!
+
+\* MagicString v0.24.x has great enhancements, but it needs testing with this plugin.
 
 ### v2.0.0
 - Requires node v4.2 or later.

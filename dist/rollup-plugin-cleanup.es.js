@@ -1,5 +1,5 @@
 /**
- * rollup-plugin-cleanup v2.0.0
+ * rollup-plugin-cleanup v2.0.1
  * @author aMarCruz
  * @license MIT
  */
@@ -224,13 +224,13 @@ function removeLines(magicStr, code, file, options) {
 
     if (empties) {
       // maxEmptyLines -1 or > 0
-      while (match = NEXT_LINES.exec(region)) {
+      while ((match = NEXT_LINES.exec(region))) {
         block = match[0];
         replaceBlock(block, start + match.index, limitLines(block, maxEolChars));
       }
     } else {
       // removes all the empty lines
-      while (match = NEXT_LINES.exec(region)) {
+      while ((match = NEXT_LINES.exec(region))) {
         replaceBlock(match[0], start + match.index, eolTo);
       }
     }
