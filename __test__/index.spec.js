@@ -65,6 +65,7 @@ describe('rollup-plugin-cleanup', function () {
   const emptyLinesTop = emptyLines10 + 'X'
   const emptyLinesBottom = 'X' + emptyLines10
   const emptyLinesMiddle = emptyLines10 + 'X' + emptyLines10 + 'X' + emptyLines10
+  const emptyLinesTemplate = emptyLines10 + '`' + emptyLines10 + '`' + emptyLines10
 
 
   test('by default removes all the empty lines and normalize to unix', function () {
@@ -88,14 +89,17 @@ describe('rollup-plugin-cleanup', function () {
     const promises = [
       testLines(emptyLinesTop, 'X'),
       testLines(emptyLinesBottom, 'X\n'),
+      testLines(emptyLinesTemplate, '`' + emptyLines10 + '`\n'),
 
       testLines(emptyLinesTop, '\nX', 1),
       testLines(emptyLinesBottom, 'X\n\n', 1),
       testLines(emptyLinesMiddle, '\nX\n\nX\n\n', 1),
+      testLines(emptyLinesTemplate, '\n`' + emptyLines10 + '`\n\n', 1),
 
       testLines(emptyLinesTop, '\n\n\nX', 3),
       testLines(emptyLinesBottom, 'X\n\n\n\n', 3),
       testLines(emptyLinesMiddle, '\n\n\nX\n\n\n\nX\n\n\n\n', 3),
+      testLines(emptyLinesTemplate, '\n\n\n`' + emptyLines10 + '`\n\n\n\n', 3),
     ]
     return Promise.all(promises)
   })
@@ -105,7 +109,8 @@ describe('rollup-plugin-cleanup', function () {
     return Promise.all([
       testLines(emptyLinesTop, null, -1),
       testLines(emptyLinesBottom, null, -1),
-      testLines(emptyLinesMiddle, null, -1)
+      testLines(emptyLinesMiddle, null, -1),
+      testLines(emptyLinesTemplate, null, -1),
     ])
   })
 
@@ -115,7 +120,8 @@ describe('rollup-plugin-cleanup', function () {
     return Promise.all([
       testLines(emptyLinesTop, '\r\nX', opts),
       testLines(emptyLinesBottom, 'X\r\n\r\n', opts),
-      testLines(emptyLinesMiddle, '\r\nX\r\n\r\nX\r\n\r\n', opts)
+      testLines(emptyLinesMiddle, '\r\nX\r\n\r\nX\r\n\r\n', opts),
+      testLines(emptyLinesTemplate, '\r\n`' + emptyLines10 + '`\r\n\r\n', opts),
     ])
   })
 
@@ -125,7 +131,8 @@ describe('rollup-plugin-cleanup', function () {
     return Promise.all([
       testLines(emptyLinesTop, '\rX', opts),
       testLines(emptyLinesBottom, 'X\r\r', opts),
-      testLines(emptyLinesMiddle, '\rX\r\rX\r\r', opts)
+      testLines(emptyLinesMiddle, '\rX\r\rX\r\r', opts),
+      testLines(emptyLinesTemplate, '\r`' + emptyLines10 + '`\r\r', opts),
     ])
   })
 

@@ -1,5 +1,8 @@
 # rollup-plugin-cleanup changes
 
+### v2.0.1
+- Preserves empty lines inside multi-line strings.
+
 ### v2.0.0
 - Requires node v4.2 or later.
 - Emission of source map honors the Rollup `sourceMap` or `sourcemap` (lowercased) options.
