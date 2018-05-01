@@ -183,7 +183,6 @@ describe('rollup-plugin-cleanup', function () {
   test('throws with the rollup `this.error` method.', function () {
     const opts = {
       input: 'fixtures/with_error.js',
-      sourcemap: false,
       plugins: [cleanup()]
     }
 
@@ -276,7 +275,6 @@ describe('Support for post-procesing', function () {
     const jsx  = require('rollup-plugin-jsx')
     const opts = {
       input: 'fixtures/issue_1.jsx',
-      sourcemap: false,
       plugins: [
         jsx({
           factory: 'React.createElement'
@@ -295,24 +293,13 @@ describe('Support for post-procesing', function () {
     )
   })
 
+})
 
-  test('of riot .tag files', function () {
-    const riot = require('rollup-plugin-riot')
-    const opts = {
-      input: 'fixtures/todo.tag',
-      sourcemap: false,
-      plugins: [
-        riot(),
-        cleanup()
-      ],
-      external: ['riot']
-    }
 
-    return rollup(opts).then(bundle =>
-      bundle.generate({ format: 'cjs' }).then(result => {
-        expect(result.code).toMatch(/riot\.tag2\(/)
-      })
-    )
+describe('ES 2018 (ES9) support', function () {
+
+  test('spread operator in object (issue #10)', function () {
+    return testFile('issue_10', { ecmaVersion: 9 })
   })
 
 })
@@ -326,7 +313,6 @@ describe('SourceMap support', function () {
 
     return rollup({
       input: concat('bundle-src.js', 'maps'),
-      sourcemap: true,
       plugins: [
         buble(),
         cleanup({

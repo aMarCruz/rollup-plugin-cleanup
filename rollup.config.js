@@ -20,11 +20,19 @@ export default {
       target: { node: 4 }
     })
   ],
-  banner,
   external,
-  interop: false,
   output: [
-    { file: 'dist/rollup-plugin-cleanup.js', format: 'cjs' },
-    { file: 'dist/rollup-plugin-cleanup.es.js', format: 'es' }
+    {
+      file: 'dist/rollup-plugin-cleanup.js',
+      format: 'cjs',
+      banner,
+      interop: false,
+    },
+    {
+      file: 'dist/rollup-plugin-cleanup.es.js',
+      format: 'es',
+      banner,
+      interop: false,
+    }
   ]
 }

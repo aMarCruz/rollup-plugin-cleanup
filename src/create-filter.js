@@ -14,7 +14,7 @@ export default function _createFilter(opts) {
 
   const filt = createFilter(opts.include, opts.exclude)
 
-  let exts = opts.extensions || ['.js', '.jsx', '.tag']
+  let exts = opts.extensions || ['.js', '.jsx']
   if (!Array.isArray(exts)) exts = [exts]
   for (let i = 0; i < exts.length; i++) {
     const e = exts[i]

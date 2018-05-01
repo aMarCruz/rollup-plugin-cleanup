@@ -1,12 +1,12 @@
 /**
- * rollup-plugin-cleanup v2.0.1
+ * rollup-plugin-cleanup v3.0.0-beta.1
  * @author aMarCruz
  * @license MIT
  */
 import { createFilter } from 'rollup-pluginutils';
 import { extname } from 'path';
-import MagicString from 'magic-string';
 import acorn from 'acorn';
+import MagicString from 'magic-string';
 
 /**
  * Creates a filter for the options `include`, `exclude`, and `extensions`.
@@ -18,12 +18,12 @@ import acorn from 'acorn';
  */
 function _createFilter(opts) {
 
-  const filt = createFilter(opts.include, opts.exclude);
+  var filt = createFilter(opts.include, opts.exclude);
 
-  let exts = opts.extensions || ['.js', '.jsx', '.tag'];
+  var exts = opts.extensions || ['.js', '.jsx'];
   if (!Array.isArray(exts)) { exts = [exts]; }
-  for (let i = 0; i < exts.length; i++) {
-    const e = exts[i];
+  for (var i = 0; i < exts.length; i++) {
+    var e = exts[i];
     if (e === '*') {
       exts = '*';
       break
@@ -39,7 +39,7 @@ function _createFilter(opts) {
 
 /* eslint no-useless-escape:0 */
 
-const _filters = {
+var _filters = {
   // only preserve license
   license:  /@license\b/,
   // (almost) like the uglify defaults
@@ -65,14 +65,14 @@ const _filters = {
 function parseOptions(options) {
 
   // multiple forms to specify comment filters, default is 'some'
-  let comments = options.comments;
+  var comments = options.comments;
   if (comments == null) {
     comments = [_filters.some];
   } else if (typeof comments != 'boolean') {
-    const filters = Array.isArray(comments) ? comments : [comments];
+    var filters = Array.isArray(comments) ? comments : [comments];
     comments = [];
-    for (let i = 0; i < filters.length; i++) {
-      const f = filters[i];
+    for (var i = 0; i < filters.length; i++) {
+      var f = filters[i];
       if (f instanceof RegExp) {
         comments.push(f);
       } else if (f === 'all') {
@@ -89,14 +89,14 @@ function parseOptions(options) {
     }
   }
 
-  let normalizeEols = options.hasOwnProperty('normalizeEols')
+  var normalizeEols = options.hasOwnProperty('normalizeEols')
     ? options.normalizeEols : options.eolType;
   if (normalizeEols !== false && normalizeEols !== 'win' && normalizeEols !== 'mac') {
     normalizeEols = 'unix';
   }
 
   return {
-    ecmaVersion: options.ecmaVersion || 8,
+    ecmaVersion: options.ecmaVersion || 9,
     sourceMap: options.sourceMap !== false && options.sourcemap !== false,
     sourceType: options.sourceType || 'module',
     maxEmptyLines: options.maxEmptyLines | 0,
@@ -112,14 +112,14 @@ function parseOptions(options) {
  * @const {string}
  * @private
  */
-const _spaces = new Array(150).join(' ');
+var _spaces = new Array(150).join(' ');
 
 /**
  * Matches non-EOL characteres.
  * @const
  * @private
  */
-const NOBLANK = /[^\n\r]+/g;
+var NOBLANK = /[^\n\r]+/g;
 
 /**
  * Replaces all the non-EOL characters in the block with spaces.
@@ -129,9 +129,9 @@ const NOBLANK = /[^\n\r]+/g;
  * @private
  */
 function blankBlock(block) {
-  const len = block.length;
+  var len = block.length;
 
-  let spaces = _spaces;
+  var spaces = _spaces;
   while (spaces.length < len) {
     spaces += _spaces;
   }
@@ -149,12 +149,12 @@ function blankBlock(block) {
  * @returns {string} The processed code
  */
 function blankComments(code, file, options) {
-  const comments = options.comments;
+  var comments = options.comments;
 
-  const onComment = function (block, text, start, end) {
+  var onComment = function (block, text, start, end) {
     if (comments !== false) {
       text = (block ? '*' : '/') + text;
-      for (let i = 0; i < comments.length; i++) {
+      for (var i = 0; i < comments.length; i++) {
         if (comments[i].test(text)) { return }
       }
     }
@@ -173,45 +173,45 @@ function blankComments(code, file, options) {
   return code
 }
 
-const EOL_TYPES   = { unix: '\n', mac: '\r', win: '\r\n' };
-const FIRST_LINES = /^\s*[\r\n]/;
-const EACH_LINE   = /.*(?:\r\n?|\n)/g;
-const TRIM_SPACES = /[^\S\r\n]+$/;
+var EOL_TYPES   = { unix: '\n', mac: '\r', win: '\r\n' };
+var FIRST_LINES = /^\s*[\r\n]/;
+var EACH_LINE   = /.*(?:\r\n?|\n)/g;
+var TRIM_SPACES = /[^\S\r\n]+$/;
 
 function removeLines(magicStr, code, file, options) {
 
   // matches one or more line endings and their leading spaces
-  const NEXT_LINES = /\s*[\r\n]/g;
+  var NEXT_LINES = /\s*[\r\n]/g;
 
-  const eolTo   = EOL_TYPES[options.normalizeEols];
-  const empties = options.maxEmptyLines;
-  const maxEolCharsAtStart = empties < 0 ? Infinity : empties ? empties * eolTo.length : 0;
+  var eolTo   = EOL_TYPES[options.normalizeEols];
+  var empties = options.maxEmptyLines;
+  var maxEolCharsAtStart = empties < 0 ? Infinity : empties ? empties * eolTo.length : 0;
   // middle lines count one more
-  const maxEolChars = maxEolCharsAtStart + eolTo.length;
+  var maxEolChars = maxEolCharsAtStart + eolTo.length;
 
-  let match, block, region;
-  let changes = false;
-  let pos = 0;
+  var match, block, region;
+  var changes = false;
+  var pos = 0;
 
   // Helpers
   // -------
 
-  const replaceBlock = (str, start, rep) => {
+  var replaceBlock = (str, start, rep) => {
     if (str !== rep) {
       magicStr.overwrite(start, start + str.length, rep);
       changes = true;
     }
   };
 
-  const limitLines = (str, max) => {
-    let ss = str.replace(EACH_LINE, eolTo);
+  var limitLines = (str, max) => {
+    var ss = str.replace(EACH_LINE, eolTo);
     if (ss.length > max) {
       ss = ss.slice(0, max);
     }
     return ss
   };
 
-  const squashRegion = (start, end, atStart, atEnd) => {
+  var squashRegion = (start, end, atStart, atEnd) => {
     NEXT_LINES.lastIndex = 0;
     region = magicStr.slice(start, end);
 
@@ -240,7 +240,7 @@ function removeLines(magicStr, code, file, options) {
     }
   };
 
-  const onToken = (ref) => {
+  var onToken = (ref) => {
     var start = ref.start;
     var end = ref.end;
     var type = ref.type;
@@ -268,8 +268,8 @@ function removeLines(magicStr, code, file, options) {
 function cleanup(source, file, options) {
 
   return new Promise(resolve => {
-    let changes;
-    let code;
+    var changes;
+    var code;
 
     if (options.comments === true) {
       code = source;
@@ -278,7 +278,7 @@ function cleanup(source, file, options) {
       changes = code !== source;
     }
 
-    const magicStr = new MagicString(code);
+    var magicStr = new MagicString(code);
 
     changes = removeLines(magicStr, code, file, options) || changes;
 
@@ -302,7 +302,7 @@ function rollupCleanup(options) {
   if (!options) { options = {}; }
 
   // merge include, exclude, and extensions
-  const filter = _createFilter(options);
+  var filter = _createFilter(options);
 
   // validate and clone the plugin options
   options = parseOptions(options);

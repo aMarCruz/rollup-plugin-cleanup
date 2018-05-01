@@ -57,7 +57,7 @@ export default function parseOptions(options) {
   }
 
   return {
-    ecmaVersion: options.ecmaVersion || 8,
+    ecmaVersion: options.ecmaVersion || 9,
     sourceMap: options.sourceMap !== false && options.sourcemap !== false,
     sourceType: options.sourceType || 'module',
     maxEmptyLines: options.maxEmptyLines | 0,

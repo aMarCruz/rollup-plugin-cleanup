@@ -14,7 +14,7 @@ With *cleanup*, you have:
 * Remotion of trailing spaces preserving ES6 Template Literal Strings
 * Source Map support
 
-Please see [Whats New](#whats-new), cleanup v2.0.0 requires node v4.2 or above.
+Please see [Whats New](#whats-new), cleanup v3.0.0 requires node v4.2 or above.
 
 **IMPORTANT:**
 
@@ -105,11 +105,10 @@ This filter will preserve multiline comments starting with a dash, in addition t
 
 ### What's New
 
-- Adds rollup >=0.50 as peerDependencies, hope to update devDependencies soon\*.
-- Preserves empty lines inside ES6 Template Literal Strings, thanks to @mkhl.
-- Welcome to @mkhl to the rollup-plugin-cleanup team!
-
-\* MagicString v0.24.x has great enhancements, but it needs testing with this plugin.
+- Removed the [riot](http://riotjs.com/) .tag extension from the defaults, you can add this manually.
+- Now acorn `ecmaVersion` defaults to 9 (ES2018).
+- Closes #10 : Errors out on spread operator.
+- Updated devDependencies the to last acorn and rollup plugins.
 
 ---
 
