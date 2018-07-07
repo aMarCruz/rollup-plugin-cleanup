@@ -136,7 +136,7 @@ export default {
 
 For info about the use of a plugin, please visit the site of each particular plugin.
 
-### What's New
+## What's New
 
 - New option `acornOptions`, for advanced usage.
   This is an optional, plain JS object with additional settings passed to the [Acorn](https://github.com/acornjs/acorn) parser. Properties of this object are merged with, and take precedence over, the existing `ecmaVersion` and `sourceType` options.
