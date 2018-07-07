@@ -14,7 +14,7 @@ With *cleanup*, you have:
 * Remotion of trailing spaces preserving ES6 Template Literal Strings
 * Source Map support
 
-Please see [Whats New](#whats-new), cleanup v3.0.0 requires node v4.2 or above.
+Please see [Whats New](#whats-new), cleanup v3.0.0 requires node v6.14 or above.
 
 **IMPORTANT:**
 
@@ -106,7 +106,7 @@ This filter will preserve multiline comments starting with a dash, in addition t
   ]
 ```
 
-### Using Acorn Plugins
+## Using Acorn Plugins
 
 Cleanup comes preconfigured to be easy to use, but for special needs (i.e. Stage 3 features) you can use [Acorn plugins](https://github.com/acornjs/acorn#plugins) in combination with the new `acornOptions` option.
 
