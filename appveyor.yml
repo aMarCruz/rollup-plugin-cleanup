@@ -11,8 +11,8 @@ init:
 environment:
   matrix:
   # node.js
-  - nodejs_version: "4.2"
-  - nodejs_version: "7"
+  - nodejs_version: "6.14"
+  - nodejs_version: "9"
 
 matrix:
   fast_finish: false

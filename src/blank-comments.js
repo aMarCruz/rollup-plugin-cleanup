@@ -8,7 +8,7 @@ import acorn from 'acorn'
  * @const {string}
  * @private
  */
-const _spaces = new Array(150).join(' ')
+const _spaces = new Array(200).join(' ')
 
 /**
  * Matches non-EOL characteres.
@@ -61,9 +61,8 @@ export default function blankComments(code, file, options) {
   // Now replace the comments. As blankComment will not change code
   // positions, trimming empty lines will be easy.
   acorn.parse(code, {
-    ecmaVersion: options.ecmaVersion,
-    sourceType: options.sourceType,
-    onComment
+    ...options.acornOptions,
+    onComment,
   })
 
   return code

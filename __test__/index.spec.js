@@ -75,7 +75,7 @@ describe('rollup-plugin-cleanup', function () {
       'x\t',
       '\r\ny \r',
       '\n\n\r\t',
-      'z '
+      'z ',
     ].join('\n'), 'abc\nx\ny\nz')
   })
 
@@ -183,7 +183,7 @@ describe('rollup-plugin-cleanup', function () {
   test('throws with the rollup `this.error` method.', function () {
     const opts = {
       input: 'fixtures/with_error.js',
-      plugins: [cleanup()]
+      plugins: [cleanup()],
     }
 
     expect.assertions(1)
@@ -199,7 +199,7 @@ describe('Removing comments', function () {
 
   test('with `comments: ["some", "eslint"]', function () {
     return testFile('defaults', {
-      comments: ['some', 'eslint']
+      comments: ['some', 'eslint'],
     })
   })
 
@@ -250,14 +250,14 @@ describe('Extension handling', function () {
 
   test('with `extensions: ["*"] must process all extensions', function () {
     return testFile('extensions.foo', {
-      extensions: ['*']
+      extensions: ['*'],
     })
   })
 
 
   test('with specific `extensions` must process given extensions', function () {
     return testFile('extensions.foo', {
-      extensions: 'foo'
+      extensions: 'foo',
     })
   })
 
@@ -277,11 +277,11 @@ describe('Support for post-procesing', function () {
       input: 'fixtures/issue_1.jsx',
       plugins: [
         jsx({
-          factory: 'React.createElement'
+          factory: 'React.createElement',
         }),
-        cleanup()
+        cleanup(),
       ],
-      external: ['react']
+      external: ['react'],
     }
 
     return rollup(opts).then(bundle =>
@@ -296,10 +296,25 @@ describe('Support for post-procesing', function () {
 })
 
 
-describe('ES 2018 (ES9) support', function () {
+describe('ES2018 & Stage 3 support', function () {
 
   test('spread operator in object (issue #10)', function () {
     return testFile('issue_10', { ecmaVersion: 9 })
+  })
+
+  test('import() support through acorn-dynamic-import', function () {
+    const acorn = require('acorn')
+    const acornOptions = {
+      plugins: {
+        dynamicImport: true,
+      },
+    }
+
+    // Inject the plugin into acorn.
+    // In production it is likely you use `import inject from "acorn-dynamic-import/lib/inject"`
+    require('acorn-dynamic-import/lib/inject').default(acorn)
+
+    return testFile('issue_11', { acornOptions })
   })
 
 })
@@ -316,9 +331,9 @@ describe('SourceMap support', function () {
       plugins: [
         buble(),
         cleanup({
-          comments: ['some', 'eslint']
-        })
-      ]
+          comments: ['some', 'eslint'],
+        }),
+      ],
     }).then(function (bundle) {
 
       return bundle.generate({
@@ -328,7 +343,7 @@ describe('SourceMap support', function () {
         sourcemap: 'inline',
         sourcemapFile: 'maps/bundle.js', // generates sorce filename w/o path
         banner: '/*\n plugin version 1.0\n*/',
-        footer: '/* follow me on Twitter! @amarcruz */'
+        footer: '/* follow me on Twitter! @amarcruz */',
       }).then(result => {
         const code = result.code + '\n//# source' + 'MappingURL=' + result.map.toUrl()
         /*

@@ -28,7 +28,9 @@ Uglify is a excelent *minifier* but you have little control over the results, wh
 ## Install
 
 ```sh
-npm install rollup-plugin-cleanup --save-dev
+$ npm install rollup-plugin-cleanup --save-dev
+# or with yarn
+$ yarn add rollup-plugin-cleanup -D
 ```
 
 ## Usage
@@ -59,7 +61,9 @@ Name | Default | Description
 comments | `'some'` | Filter or array of filter names and/or regexes. Use "all" to keep all, or "none" to remove all the comments.
 maxEmptyLines | `0` | Use a positive value or `-1` to keep all the lines.
 normalizeEols | `unix` | Allowed values: "unix", "mac", "win".
+ecmaVersion   | 9   | For the JS parser, JS/ECMAScript version.
 sourceType | `'module'` | For the JS parser, change it to "script" if necessary.
+acornOptions  | none | Additional settings passed to the [Acorn](https://github.com/acornjs/acorn) parser (new in v3.0).
 include    | `''` | [minimatch](https://github.com/isaacs/minimatch) or array of minimatch patterns for paths to include in the process.
 exclude    | `''` | minimatch or array of minimatch patterns for paths to exclude of the process.
 extensions | `['.js', '.jsx', '.tag']` | String or array of strings with extensions of files to process.
@@ -102,13 +106,41 @@ This filter will preserve multiline comments starting with a dash, in addition t
   ]
 ```
 
+### Using Acorn Plugins
+
+Cleanup comes preconfigured to be easy to use, but for special needs (i.e. Stage 3 features) you can use [Acorn plugins](https://github.com/acornjs/acorn#plugins) in combination with the new `acornOptions` option.
+
+For example, this fragment of rollup.config.js uses the [acorn-dynamic-import](https://github.com/kesne/acorn-dynamic-import) plugin to support dynamic `import()`:
+
+```js
+// rollup.config.js
+import acorn from 'acorn'
+import inject from 'acorn-dynamic-import/lib/inject'
+
+inject(acorn)  // inject the plugin into global acorn
+
+export default {
+  input: 'src/index.js',
+  plugins: [
+    cleanup({
+      acornOptions: {
+        plugins: {
+          dynamicImport: true
+        }
+      }
+    })
+  ],
+  // ...etc
+```
+
+For info about the use of a plugin, please visit the site of each particular plugin.
 
 ### What's New
 
-- Removed the [riot](http://riotjs.com/) .tag extension from the defaults, you can add this manually.
-- Now acorn `ecmaVersion` defaults to 9 (ES2018).
-- Closes #10 : Errors out on spread operator.
-- Updated devDependencies the to last acorn and rollup plugins.
+- New option `acornOptions`, for advanced usage.
+  This is an optional, plain JS object with additional settings passed to the [Acorn](https://github.com/acornjs/acorn) parser. Properties of this object are merged with, and take precedence over, the existing `ecmaVersion` and `sourceType` options.
+- The mimimum node version is now 6.14, for compatibility with ESLint 5.
+- Updated devDependencies.
 
 ---
 

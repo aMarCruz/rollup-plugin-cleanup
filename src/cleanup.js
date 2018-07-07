@@ -24,10 +24,9 @@ export default function cleanup(source, file, options) {
     resolve(changes
       ? {
         code: magicStr.toString(),
-        map: options.sourceMap ? magicStr.generateMap({ hires: true }) : null
+        map: options.sourceMap ? magicStr.generateMap({ hires: true }) : null,
       }
       : null)   // tell to Rollup that discard this result
-
   })
 
 }

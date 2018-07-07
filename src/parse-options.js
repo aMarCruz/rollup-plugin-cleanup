@@ -20,10 +20,17 @@ const _filters = {
   // https://gotwarlost.github.io/istanbul/
   istanbul: /^[/\*]\s*istanbul\s/,
   // http://www.html5rocks.com/en/tutorials/developertools/sourcemaps/
-  srcmaps:  /^.[#@]\ssource(?:Mapping)?URL=/
+  srcmaps:  /^.[#@]\ssource(?:Mapping)?URL=/,
 }
 
 export default function parseOptions(options) {
+
+  // Support acorn options for advanced usage, fixes #11
+  const acornOptions = {
+    ecmaVersion: options.ecmaVersion || 9,
+    sourceType: options.sourceType || 'module',
+    ...options.acornOptions,
+  }
 
   // multiple forms to specify comment filters, default is 'some'
   let comments = options.comments
@@ -57,11 +64,10 @@ export default function parseOptions(options) {
   }
 
   return {
-    ecmaVersion: options.ecmaVersion || 9,
+    acornOptions,
     sourceMap: options.sourceMap !== false && options.sourcemap !== false,
-    sourceType: options.sourceType || 'module',
     maxEmptyLines: options.maxEmptyLines | 0,
     normalizeEols,
-    comments
+    comments,
   }
 }

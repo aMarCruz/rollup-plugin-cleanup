@@ -1,5 +1,5 @@
 /**
- * rollup-plugin-cleanup v3.0.0-beta.1
+ * rollup-plugin-cleanup v3.0.0
  * @author aMarCruz
  * @license MIT
  */
@@ -20,12 +20,12 @@ var MagicString = require('magic-string');
  */
 function _createFilter(opts) {
 
-  var filt = rollupPluginutils.createFilter(opts.include, opts.exclude);
+  const filt = rollupPluginutils.createFilter(opts.include, opts.exclude);
 
-  var exts = opts.extensions || ['.js', '.jsx'];
-  if (!Array.isArray(exts)) { exts = [exts]; }
-  for (var i = 0; i < exts.length; i++) {
-    var e = exts[i];
+  let exts = opts.extensions || ['.js', '.jsx'];
+  if (!Array.isArray(exts)) exts = [exts];
+  for (let i = 0; i < exts.length; i++) {
+    const e = exts[i];
     if (e === '*') {
       exts = '*';
       break
@@ -41,7 +41,7 @@ function _createFilter(opts) {
 
 /* eslint no-useless-escape:0 */
 
-var _filters = {
+const _filters = {
   // only preserve license
   license:  /@license\b/,
   // (almost) like the uglify defaults
@@ -61,20 +61,27 @@ var _filters = {
   // https://gotwarlost.github.io/istanbul/
   istanbul: /^[/\*]\s*istanbul\s/,
   // http://www.html5rocks.com/en/tutorials/developertools/sourcemaps/
-  srcmaps:  /^.[#@]\ssource(?:Mapping)?URL=/
+  srcmaps:  /^.[#@]\ssource(?:Mapping)?URL=/,
 };
 
 function parseOptions(options) {
 
+  // Support acorn options for advanced usage, fixes #11
+  const acornOptions = {
+    ecmaVersion: options.ecmaVersion || 9,
+    sourceType: options.sourceType || 'module',
+    ...options.acornOptions,
+  };
+
   // multiple forms to specify comment filters, default is 'some'
-  var comments = options.comments;
+  let comments = options.comments;
   if (comments == null) {
     comments = [_filters.some];
   } else if (typeof comments != 'boolean') {
-    var filters = Array.isArray(comments) ? comments : [comments];
+    const filters = Array.isArray(comments) ? comments : [comments];
     comments = [];
-    for (var i = 0; i < filters.length; i++) {
-      var f = filters[i];
+    for (let i = 0; i < filters.length; i++) {
+      const f = filters[i];
       if (f instanceof RegExp) {
         comments.push(f);
       } else if (f === 'all') {
@@ -91,19 +98,18 @@ function parseOptions(options) {
     }
   }
 
-  var normalizeEols = options.hasOwnProperty('normalizeEols')
+  let normalizeEols = options.hasOwnProperty('normalizeEols')
     ? options.normalizeEols : options.eolType;
   if (normalizeEols !== false && normalizeEols !== 'win' && normalizeEols !== 'mac') {
     normalizeEols = 'unix';
   }
 
   return {
-    ecmaVersion: options.ecmaVersion || 9,
+    acornOptions,
     sourceMap: options.sourceMap !== false && options.sourcemap !== false,
-    sourceType: options.sourceType || 'module',
     maxEmptyLines: options.maxEmptyLines | 0,
     normalizeEols,
-    comments
+    comments,
   }
 }
 
@@ -114,14 +120,14 @@ function parseOptions(options) {
  * @const {string}
  * @private
  */
-var _spaces = new Array(150).join(' ');
+const _spaces = new Array(200).join(' ');
 
 /**
  * Matches non-EOL characteres.
  * @const
  * @private
  */
-var NOBLANK = /[^\n\r]+/g;
+const NOBLANK = /[^\n\r]+/g;
 
 /**
  * Replaces all the non-EOL characters in the block with spaces.
@@ -131,9 +137,9 @@ var NOBLANK = /[^\n\r]+/g;
  * @private
  */
 function blankBlock(block) {
-  var len = block.length;
+  const len = block.length;
 
-  var spaces = _spaces;
+  let spaces = _spaces;
   while (spaces.length < len) {
     spaces += _spaces;
   }
@@ -151,13 +157,13 @@ function blankBlock(block) {
  * @returns {string} The processed code
  */
 function blankComments(code, file, options) {
-  var comments = options.comments;
+  const comments = options.comments;
 
-  var onComment = function (block, text, start, end) {
+  const onComment = function (block, text, start, end) {
     if (comments !== false) {
       text = (block ? '*' : '/') + text;
-      for (var i = 0; i < comments.length; i++) {
-        if (comments[i].test(text)) { return }
+      for (let i = 0; i < comments.length; i++) {
+        if (comments[i].test(text)) return
       }
     }
     text = code.slice(start, end).replace(NOBLANK, blankBlock);
@@ -167,63 +173,93 @@ function blankComments(code, file, options) {
   // Now replace the comments. As blankComment will not change code
   // positions, trimming empty lines will be easy.
   acorn.parse(code, {
-    ecmaVersion: options.ecmaVersion,
-    sourceType: options.sourceType,
-    onComment
+    ...options.acornOptions,
+    onComment,
   });
 
   return code
 }
 
-var EOL_TYPES   = { unix: '\n', mac: '\r', win: '\r\n' };
-var FIRST_LINES = /^\s*[\r\n]/;
-var EACH_LINE   = /.*(?:\r\n?|\n)/g;
-var TRIM_SPACES = /[^\S\r\n]+$/;
+const EOL_TYPES = { unix: '\n', mac: '\r', win: '\r\n' };
+
+// Matches empty lines at the start of the buffer
+const FIRST_EMPTY_LINES = /^\s*[\r\n]/;
+// Searches lines and captures its line-endings (of any type).
+const EACH_LINE = /.*(?:\r\n?|\n)/g;
+// Matches spaces after the last line-ending
+const TRAILING_SPACES = /[^\S\r\n]+$/;
 
 function removeLines(magicStr, code, file, options) {
 
-  // matches one or more line endings and their leading spaces
-  var NEXT_LINES = /\s*[\r\n]/g;
+  // Local regex that matches one or more line endings and its leading spaces
+  const NEXT_LINES = /\s*[\r\n]/g;
 
-  var eolTo   = EOL_TYPES[options.normalizeEols];
-  var empties = options.maxEmptyLines;
-  var maxEolCharsAtStart = empties < 0 ? Infinity : empties ? empties * eolTo.length : 0;
+  const eolTo   = EOL_TYPES[options.normalizeEols];
+  const empties = options.maxEmptyLines;
+  const maxEolCharsAtStart = empties < 0 ? Infinity : empties ? empties * eolTo.length : 0;
   // middle lines count one more
-  var maxEolChars = maxEolCharsAtStart + eolTo.length;
+  const maxEolChars = maxEolCharsAtStart + eolTo.length;
 
-  var match, block, region;
-  var changes = false;
-  var pos = 0;
+  let changes = false;
+  let pos = 0;
 
   // Helpers
   // -------
 
-  var replaceBlock = (str, start, rep) => {
+  /**
+   * Replaces a string block with a new one through MagicString.
+   * @param {string} str Original block
+   * @param {number} start Offset of the block
+   * @param {string} rep New block
+   */
+  const replaceBlock = (str, start, rep) => {
     if (str !== rep) {
       magicStr.overwrite(start, start + str.length, rep);
       changes = true;
     }
   };
 
-  var limitLines = (str, max) => {
-    var ss = str.replace(EACH_LINE, eolTo);
+  /**
+   * Normalizes and compacts a block of blank characters to convert it into a
+   * block of line-endings that do not exceed the maximum number defined by the
+   * user.
+   * @param {string} str Block of blank characters to search on
+   * @param {number} max Maximum number of *characters* for the empty lines
+   */
+  const limitLines = (str, max) => {
+    let ss = str.replace(EACH_LINE, eolTo);
     if (ss.length > max) {
       ss = ss.slice(0, max);
     }
     return ss
   };
 
-  var squashRegion = (start, end, atStart, atEnd) => {
-    NEXT_LINES.lastIndex = 0;
-    region = magicStr.slice(start, end);
+  /**
+   * Normalizes and compacts the region of the buffer bounded by `start` and `end`.
+   * @param {number} start Offset of the start of the region
+   * @param {number} end Ending of the region
+   * @param {boolean} atStart We are at the beginning of the buffer?
+   * @param {boolean} atEnd At the end of the buffer?
+   */
+  const squashRegion = (start, end, atStart, atEnd) => {
+    const region = magicStr.slice(start, end);
+    let block;
+    let match;
 
     // first empty lines
-    if (atStart && (match = region.match(FIRST_LINES))) {
+    if (atStart && (match = region.match(FIRST_EMPTY_LINES))) {
       block = match[0];
       replaceBlock(block, start, limitLines(block, maxEolCharsAtStart));
+
+      // Set lastIndex to the start of the first non-empty line in this region
       NEXT_LINES.lastIndex = block.length;
+    } else {
+      // Reset lastIndex to the start of this region
+      NEXT_LINES.lastIndex = 0;
     }
 
+    // Compact intermediate lines, if `maxEmptyLines` is zero all blank lines
+    // are removed. If it is -1 the spaces are removed, keeping the EOLs.
     if (empties) {
       // maxEmptyLines -1 or > 0
       while ((match = NEXT_LINES.exec(region))) {
@@ -237,16 +273,13 @@ function removeLines(magicStr, code, file, options) {
       }
     }
 
-    if (atEnd && (match = TRIM_SPACES.exec(region))) {
+    // Cut the spaces after the final EOL
+    if (atEnd && (match = TRAILING_SPACES.exec(region))) {
       replaceBlock(match[0], start + match.index, '');
     }
   };
 
-  var onToken = (ref) => {
-    var start = ref.start;
-    var end = ref.end;
-    var type = ref.type;
-
+  const onToken = ({ start, end, type }) => {
     if (pos !== start) {
       squashRegion(pos, start, pos === 0, type === acorn.tokTypes.eof);
     }
@@ -257,8 +290,7 @@ function removeLines(magicStr, code, file, options) {
   // --------------
 
   acorn.parse(code, {
-    ecmaVersion: options.ecmaVersion,
-    sourceType: options.sourceType,
+    ...options.acornOptions,
     onToken,
   });
 
@@ -270,8 +302,8 @@ function removeLines(magicStr, code, file, options) {
 function cleanup(source, file, options) {
 
   return new Promise(resolve => {
-    var changes;
-    var code;
+    let changes;
+    let code;
 
     if (options.comments === true) {
       code = source;
@@ -280,17 +312,16 @@ function cleanup(source, file, options) {
       changes = code !== source;
     }
 
-    var magicStr = new MagicString(code);
+    const magicStr = new MagicString(code);
 
     changes = removeLines(magicStr, code, file, options) || changes;
 
     resolve(changes
       ? {
         code: magicStr.toString(),
-        map: options.sourceMap ? magicStr.generateMap({ hires: true }) : null
+        map: options.sourceMap ? magicStr.generateMap({ hires: true }) : null,
       }
       : null);   // tell to Rollup that discard this result
-
   })
 
 }
@@ -301,10 +332,10 @@ function cleanup(source, file, options) {
  * @returns {Object} Plugin instance.
  */
 function rollupCleanup(options) {
-  if (!options) { options = {}; }
+  if (!options) options = {};
 
   // merge include, exclude, and extensions
-  var filter = _createFilter(options);
+  const filter = _createFilter(options);
 
   // validate and clone the plugin options
   options = parseOptions(options);
@@ -336,7 +367,7 @@ function rollupCleanup(options) {
       }
 
       return null
-    }
+    },
   }
 }
 
