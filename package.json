@@ -11,7 +11,7 @@
   "scripts": {
     "test": "jest",
     "pretest": "rollup -c",
-    "lint": "eslint src __test__/index.js",
+    "lint": "eslint src",
     "build": "npm run lint && rm -rf dist/* && npm test",
     "prepublish": "npm run build"
   },
