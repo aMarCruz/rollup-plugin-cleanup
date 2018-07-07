@@ -10,7 +10,6 @@ module.exports = {
     impliedStrict: true,
     sourceType: 'module',
     ecmaFeatures: {
-      experimentalObjectRestSpread: true,
       modules: true,
     },
   },
