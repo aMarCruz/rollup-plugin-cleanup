@@ -1,4 +1,5 @@
 [![Build Status][build-image]][build-url]
+[![Coverage][cover-image]][cover-url]
 [![npm Version][npm-image]][npm-url]
 [![License][license-image]][license-url]
 
@@ -146,20 +147,20 @@ For info about the use of a plugin, please visit the site of each particular plu
 
 \* _Contributions and stars are welcome..._
 
-[build-image]:    https://img.shields.io/travis/aMarCruz/rollup-plugin-cleanup/master.svg?style=flat-square
+[build-image]:    https://img.shields.io/travis/aMarCruz/rollup-plugin-cleanup/master.svg
 [build-url]:      https://travis-ci.org/aMarCruz/rollup-plugin-cleanup
 
-[wbuild-image]:   https://img.shields.io/appveyor/ci/aMarCruz/rollup-plugin-cleanup/master.svg?style=flat-square
+[wbuild-image]:   https://img.shields.io/appveyor/ci/aMarCruz/rollup-plugin-cleanup/master.svg
 [wbuild-url]:     https://ci.appveyor.com/project/aMarCruz/rollup-plugin-cleanup/branch/master
 
-[npm-image]:      https://img.shields.io/npm/v/rollup-plugin-cleanup.svg?style=flat-square
+[npm-image]:      https://img.shields.io/npm/v/rollup-plugin-cleanup.svg
 [npm-url]:        https://www.npmjs.com/package/rollup-plugin-cleanup
 
-[license-image]:  https://img.shields.io/npm/l/express.svg?style=flat-square
+[license-image]:  https://img.shields.io/npm/l/express.svg
 [license-url]:    https://github.com/aMarCruz/rollup-plugin-cleanup/blob/master/LICENSE
 
-[cover-image]:    https://img.shields.io/codeclimate/coverage/github/aMarCruz/rollup-plugin-cleanup.svg?style=flat-square
-[cover-url]:      https://codeclimate.com/github/aMarCruz/rollup-plugin-cleanup/coverage
+[cover-image]:    https://api.codeclimate.com/v1/badges/a63cdadb2dce668d3e8b/test_coverage
+[cover-url]:      https://codeclimate.com/github/aMarCruz/rollup-plugin-cleanup/test_coverage
 
-[issues-image]:		https://img.shields.io/codeclimate/issues/github/aMarCruz/rollup-plugin-cleanup.svg?style=flat-square
+[issues-image]:		https://img.shields.io/codeclimate/issues/github/aMarCruz/rollup-plugin-cleanup.svg
 [issues-url]:     https://codeclimate.com/github/aMarCruz/rollup-plugin-cleanup
