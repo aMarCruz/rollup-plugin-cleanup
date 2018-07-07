@@ -26,11 +26,13 @@ const _filters = {
 export default function parseOptions(options) {
 
   // Support acorn options for advanced usage, fixes #11
-  const acornOptions = {
-    ecmaVersion: options.ecmaVersion || 9,
-    sourceType: options.sourceType || 'module',
-    ...options.acornOptions,
-  }
+  const acornOptions = Object.assign(
+    {
+      ecmaVersion: options.ecmaVersion || 9,
+      sourceType: options.sourceType || 'module',
+    },
+    options.acornOptions
+  )
 
   // multiple forms to specify comment filters, default is 'some'
   let comments = options.comments

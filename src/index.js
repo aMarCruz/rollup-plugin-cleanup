@@ -21,12 +21,6 @@ export default function rollupCleanup(options) {
 
     name: 'cleanup',
 
-    options(opts) {
-      if (opts.sourceMap === false || opts.sourcemap === false) {
-        options.sourceMap = false
-      }
-    },
-
     transform(code, id) {
 
       if (filter(id)) {

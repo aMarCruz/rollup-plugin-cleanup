@@ -65,11 +65,13 @@ const _filters = {
 function parseOptions(options) {
 
   // Support acorn options for advanced usage, fixes #11
-  const acornOptions = {
-    ecmaVersion: options.ecmaVersion || 9,
-    sourceType: options.sourceType || 'module',
-    ...options.acornOptions,
-  };
+  const acornOptions = Object.assign(
+    {
+      ecmaVersion: options.ecmaVersion || 9,
+      sourceType: options.sourceType || 'module',
+    },
+    options.acornOptions
+  );
 
   // multiple forms to specify comment filters, default is 'some'
   let comments = options.comments;
@@ -170,10 +172,11 @@ function blankComments(code, file, options) {
 
   // Now replace the comments. As blankComment will not change code
   // positions, trimming empty lines will be easy.
-  acorn.parse(code, {
-    ...options.acornOptions,
-    onComment,
-  });
+  acorn.parse(code, Object.assign(
+    {},
+    options.acornOptions,
+    { onComment }
+  ));
 
   return code
 }
@@ -287,10 +290,11 @@ function removeLines(magicStr, code, file, options) {
   // Lines remotion
   // --------------
 
-  acorn.parse(code, {
-    ...options.acornOptions,
-    onToken,
-  });
+  acorn.parse(code, Object.assign(
+    {},
+    options.acornOptions,
+    { onToken }
+  ));
 
   return changes
 }
@@ -342,12 +346,6 @@ function rollupCleanup(options) {
   return {
 
     name: 'cleanup',
-
-    options(opts) {
-      if (opts.sourceMap === false || opts.sourcemap === false) {
-        options.sourceMap = false;
-      }
-    },
 
     transform(code, id) {
 

@@ -110,10 +110,11 @@ export default function removeLines(magicStr, code, file, options) {
   // Lines remotion
   // --------------
 
-  acorn.parse(code, {
-    ...options.acornOptions,
-    onToken,
-  })
+  acorn.parse(code, Object.assign(
+    {},
+    options.acornOptions,
+    { onToken }
+  ))
 
   return changes
 }

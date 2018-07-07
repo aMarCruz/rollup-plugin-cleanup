@@ -60,10 +60,11 @@ export default function blankComments(code, file, options) {
 
   // Now replace the comments. As blankComment will not change code
   // positions, trimming empty lines will be easy.
-  acorn.parse(code, {
-    ...options.acornOptions,
-    onComment,
-  })
+  acorn.parse(code, Object.assign(
+    {},
+    options.acornOptions,
+    { onComment }
+  ))
 
   return code
 }
