@@ -1,10 +1,10 @@
 /*
- plugin version 1.0
+  plugin version 1.0
 */
+/*eslint-disable*/
 var myapp = (function () {
   'use strict';
 
-  /* eslint-disable no-undef */
   var __TEST = 1;
   function preproc (code) {
     return code
@@ -12,6 +12,9 @@ var myapp = (function () {
   function postproc (code) {
     return code
   }
+  /*!
+    Main
+  */
   function jspp (options) {
     if ( options === void 0 ) options = {};
     var filter = function (id) { return id || __TEST; };
@@ -33,5 +36,3 @@ var myapp = (function () {
 
 }());
 /* follow me on Twitter! @amarcruz */
-
-//# sourceMappingURL=bundle.js.map

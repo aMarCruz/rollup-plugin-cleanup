@@ -3,8 +3,9 @@
   Testing sourcemaps
 
 */
-/* eslint-disable no-undef */
-
+/*
+  eslint-disable
+*/
 const __TEST = 1
 
 
@@ -17,7 +18,9 @@ function postproc (code) {
 }
 
 
-
+/*!
+  Main
+*/
 export default function jspp (options = {}) {
 
   const filter = id => id || __TEST

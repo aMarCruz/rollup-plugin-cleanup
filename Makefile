@@ -14,6 +14,7 @@ endif
 send_cover:
 ifeq ($(CURBUILD),$(REQBUILD))
 	@ echo Sending coverage report...
+	@ nyc report -r=lcov
 	@ codecov -f ./coverage/lcov.info
 	@ ./cc-test-reporter after-build --exit-code $(TRAVIS_TEST_RESULT)
 	@ echo The report was sent.

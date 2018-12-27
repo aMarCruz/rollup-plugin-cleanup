@@ -27,7 +27,7 @@ While js-cleanup is in its first version, I do not expect it to present major pr
 - Updated AppVeyor and Travis settings.
 - Updated format of the Changelog.
 - Updated devDependencies.
-- Revised tests.
+- Replaced Jest with mocha, due to issues with coverage.
 
 ### Fixed
 

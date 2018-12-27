@@ -1,5 +1,6 @@
 **/dist
 **/coverage
-**/__test__/expected
-**/__test__/fixtures
+**/test/expected
+**/test/fixtures
+**/test/map
 **/*.md

@@ -2,6 +2,7 @@
 
 const rollup  = require('rollup').rollup
 const cleanup = require('../')
+const expect  = require('expect')
 const path    = require('path')
 const fs      = require('fs')
 
@@ -30,10 +31,10 @@ function testLines(code, expected, lines) {
   }
 
   const promise = cleanup(options).transform(code, 'test.js')
-  expect(promise).not.toBeNull()
+  expect(promise).toBeA(Promise)
 
-  return promise.then(result => {
-    expect(result == null ? null : result.code).toBe(expected)
+  return promise.then((result) => {
+    expect(result && result.code).toBe(expected)
   })
 }
 
@@ -44,15 +45,15 @@ function testFile(file, opts, fexp, save) { // eslint-disable-line max-params
   const promise   = cleanup(opts).transform(code, fname)
 
   if (fexp === null) {
-    return expect(promise).toBeNull()
+    return expect(promise).toBe(null)
   }
 
-  expect(promise).toBeTruthy()
-  return promise.then(result => {
+  expect(promise).toBeA(Promise)
+  return promise.then((result) => {
     if (save && result) {
       fs.writeFileSync(concat(file + '_out'), result.code, 'utf8')
     }
-    expect(typeof result.code == 'string' ? result.code : result).toBe(expected)
+    expect(result && result.code).toBe(expected)
   })
 }
 
@@ -66,7 +67,7 @@ describe('rollup-plugin-cleanup', function () {
   const emptyLinesMiddle = emptyLines10 + 'X' + emptyLines10 + 'X' + emptyLines10
   const emptyLinesTemplate = emptyLines10 + '`' + emptyLines10 + '`' + emptyLines10
 
-  test('by default removes all the empty lines and normalize to unix', function () {
+  it('by default removes all the empty lines and normalize to unix', function () {
     return testLines([
       '',
       'abc ',
@@ -77,11 +78,11 @@ describe('rollup-plugin-cleanup', function () {
     ].join('\n'), 'abc\nx\ny\nz')
   })
 
-  test('do not touch current indentation of non-empty lines', function () {
+  it('do not touch current indentation of non-empty lines', function () {
     return testLines('  \n X\n  X ', ' X\n  X')
   })
 
-  test('has fine support for empty lines with `maxEmptyLines`', function () {
+  it('has fine support for empty lines with `maxEmptyLines`', function () {
     const promises = [
       testLines(emptyLinesTop, 'X'),
       testLines(emptyLinesBottom, 'X\n'),
@@ -100,7 +101,7 @@ describe('rollup-plugin-cleanup', function () {
     return Promise.all(promises)
   })
 
-  test('can keep all the lines by setting `maxEmptyLines` = -1', function () {
+  it('can keep all the lines by setting `maxEmptyLines` = -1', function () {
     return Promise.all([
       testLines(emptyLinesTop, emptyLinesTop, -1),
       testLines(emptyLinesBottom, emptyLinesBottom, -1),
@@ -109,7 +110,7 @@ describe('rollup-plugin-cleanup', function () {
     ])
   })
 
-  test('can convert to Windows line-endings with `normalizeEols` = "win"', function () {
+  it('can convert to Windows line-endings with `normalizeEols` = "win"', function () {
     const opts = { maxEmptyLines: 1, normalizeEols: 'win' }
     return Promise.all([
       testLines(emptyLinesTop, '\r\nX', opts),
@@ -119,7 +120,7 @@ describe('rollup-plugin-cleanup', function () {
     ])
   })
 
-  test('and convertion to Mac line-endings with `normalizeEols` = "mac"', function () {
+  it('and convertion to Mac line-endings with `normalizeEols` = "mac"', function () {
     const opts = { maxEmptyLines: 1, normalizeEols: 'mac' }
     return Promise.all([
       testLines(emptyLinesTop, '\rX', opts),
@@ -129,25 +130,24 @@ describe('rollup-plugin-cleanup', function () {
     ])
   })
 
-  test('makes normalization to the desired `normalizeEols` line-endings', function () {
+  it('makes normalization to the desired `normalizeEols` line-endings', function () {
     const opts = { maxEmptyLines: -1, normalizeEols: 'mac' }
     return testLines('\r\n \n\r \r\r\n \r\r \n', '\r\r\r\r\r\r\r\r', opts)
   })
 
-  test('handles ES7', function () {
+  it('handles ES7', function () {
     return testFile('es7')
   })
 
-  test('throws with the rollup `this.error` method.', function () {
+  it('throws with the rollup `this.error` method.', function () {
     const opts = {
       input: 'fixtures/with_error.js',
       plugins: [cleanup()],
     }
 
-    expect.assertions(2)
-    return rollup(opts).catch(err => {
+    return rollup(opts).catch((err) => {
       expect(err.code).toBe('PLUGIN_ERROR')
-      expect(err).toHaveProperty('loc')
+      expect(err).toIncludeKey('loc').toBeA(Object)
     })
   })
 
@@ -156,48 +156,55 @@ describe('rollup-plugin-cleanup', function () {
 
 describe('Removing comments', function () {
 
-  test('with `comments: ["some", "eslint"]', function () {
+  it('with `comments: ["some", "eslint"]', function () {
     return testFile('defaults', {
       comments: ['some', 'eslint'],
     })
   })
 
-  test('with `comments: "none"`', function () {
+  it('with `comments: "none"`', function () {
     return testFile('defaults', { comments: 'none' }, 'comments_none')
   })
 
-  test('with `comments: false`', function () {
+  it('with `comments: false`', function () {
     return testFile('defaults', { comments: false }, 'comments_none')
   })
 
-  test('with `comments: true`', function () {
+  it('with `comments: true`', function () {
     return testFile('defaults', { comments: true }, 'comments_all')
   })
 
-  test('with `comments: /@preserve/`', function () {
+  it('with `comments: /@preserve/`', function () {
     return testFile('defaults', { comments: /@preserve/ }, 'comments_regex')
   })
 
-  test('with long comments', function () {
+  it('with long comments', function () {
     return testFile('long_comment')
   })
 
-  test('with no changes due normalization nor emptyLines', function () {
+  it('with no changes due normalization nor emptyLines', function () {
     return testFile('comments')
   })
 
-  test('with "ts3s" preserves TypeScript Triple-Slash directives.', function () {
+  it('with "ts3s" preserves TypeScript Triple-Slash directives.', function () {
     return testFile('ts3s', { comments: 'ts3s' })
   })
 
-  test('"srcmaps" is an alias to "sources"', function () {
+  it('"srcmaps" is an alias to "sources"', function () {
     const opts = { comments: 'srcmaps' }
-    const source = '//\n0\n//# sourceURL=a.map\n//# sourceMappingURL=a.js.map'
-    return testLines(source, source.substr(3), opts)
+    const lines = [
+      '//',
+      '0',
+      '//# sourceURL=a.map',
+      '//# sourceMappingURL=a.js.map',
+    ]
+    return testLines(lines.join('\n'), lines.slice(1).join('\n'), opts)
   })
 
-  test('throws on unknown filters', function () {
-    return expect(() => { cleanup({ comments: 'foo' }) }).toThrow('unknown')
+  it('throws on unknown filters', function () {
+    return expect(() => {
+      cleanup({ comments: 'foo' })
+    }).toThrow('unknown')
   })
 
 })
@@ -205,30 +212,30 @@ describe('Removing comments', function () {
 
 describe('Extension handling', function () {
 
-  test('with `extensions: ["*"] must process all extensions', function () {
+  it('with `extensions: ["*"] must process all extensions', function () {
     return testFile('extensions.foo', {
       extensions: ['*'],
     })
   })
 
-  test('with specific `extensions` must process given extensions', function () {
+  it('with specific `extensions` must process given extensions', function () {
     return testFile('extensions.foo', {
       extensions: 'foo',
     })
   })
 
-  test('must skip non listed extensions', function () {
+  it('must skip non listed extensions', function () {
     return testFile('comments', { extensions: 'foo' }, null)
   })
 
-  test('must handle empty extensions', function () {
+  it('must handle empty extensions', function () {
     const opts = { extensions: '.', sourcemap: false }
     const source = 'A'
     expect(cleanup(opts).transform(source, 'a.ext')).toBe(null)
 
     const promise = cleanup(opts).transform(source, 'no-ext')
-    expect(promise).toBeTruthy()
-    return promise.then(result => {
+    expect(promise).toBeA(Promise)
+    return promise.then((result) => {
       expect(result.code).toBe(source)
     })
   })
@@ -238,33 +245,31 @@ describe('Extension handling', function () {
 
 describe('Issues', function () {
 
-  test('must handle .jsx files (issue #1)', function () {
+  it('must handle .jsx files (issue #1)', function () {
     const jsx  = require('rollup-plugin-jsx')
     const opts = {
       input: 'fixtures/issue_1.jsx',
       plugins: [
-        jsx({
-          factory: 'React.createElement',
-        }),
+        jsx({ factory: 'React.createElement' }),
         cleanup(),
       ],
       external: ['react'],
     }
 
-    return rollup(opts).then(bundle =>
-      bundle.generate({ format: 'cjs' }).then(result => {
-        expect(result.code).toMatch(/module.exports/)
-        expect(result.code).not.toMatch(/to_be_removed/)
-        expect(result.map).toBeFalsy()
+    return rollup(opts).then((bundle) =>
+      bundle.generate({ format: 'cjs' }).then((result) => {
+        expect(result.code).toMatch(/module\.exports/)
+        expect(result.code).toNotMatch(/to_be_removed/)
+        expect(result.map).toNotExist()
       })
     )
   })
 
-  test('must support spread operator by default (issue #10)', function () {
+  it('must support spread operator by default (issue #10)', function () {
     return testFile('issue_10')
   })
 
-  test('must support import() by default (issue #11)', function () {
+  it('must support import() by default (issue #11)', function () {
     return testFile('issue_11')
   })
 
@@ -276,15 +281,13 @@ describe('SourceMap support', function () {
   const validator = require('sourcemap-validator')
   const buble = require('rollup-plugin-buble')
 
-  test('bundle generated by rollup w/inlined sourcemap', function () {
+  it('bundle generated by rollup w/sourcemap', function () {
 
     return rollup({
       input: 'maps/bundle-src.js',
       plugins: [
         buble(),
-        cleanup({
-          comments: ['some', 'eslint'],
-        }),
+        cleanup(),
       ],
     }).then(function (bundle) {
 
@@ -294,39 +297,39 @@ describe('SourceMap support', function () {
         name: 'myapp',
         sourcemap: true,
         sourcemapFile: 'maps/bundle.js', // generates source filename w/o path
-        banner: '/*\n plugin version 1.0\n*/',
+        banner: '/*\n  plugin version 1.0\n*/\n/*eslint-disable*/',
         footer: '/* follow me on Twitter! @amarcruz */',
-      }).then(result => {
+      }).then((result) => {
         const code = result.code
-        const expected = fs.readFileSync(concat('bundle.js', 'maps'), 'utf8')
+        const expected = fs.readFileSync('maps/output.js', 'utf8')
 
-        expect(code + '\n//# sourceMappingURL=bundle.js.map').toBe(expected, 'Genereted code is incorrect!')
-        expect(result.map).toBeTruthy()
+        expect(code).toBe(expected, 'Genereted code is incorrect!')
+        expect(result.map).toBeAn(Object).toExist()
         validator(code, JSON.stringify(result.map))
       })
 
     })
   })
 
-  test('must skip sourcemap generation with `sourceMap: false`', function () {
-    const fname   = concat('defaults', 'fixtures')
+  it('must skip sourcemap generation with `sourceMap: false`', function () {
+    const fname   = 'fixtures/defaults.js'
     const code    = fs.readFileSync(fname, 'utf8')
     const promise = cleanup({ sourceMap: false }).transform(code, fname)
-    expect(promise).toBeTruthy()
+    expect(promise).toBeA(Promise)
 
-    return promise.then(result => {
-      expect(result.map).toBeFalsy()
+    return promise.then((result) => {
+      expect(result.map).toNotExist()
     })
   })
 
-  test('must skip sourcemap generation with `sourcemap: false` (lowercase)', function () {
-    const fname   = concat('defaults', 'fixtures')
+  it('must skip sourcemap generation with `sourcemap: false` (lowercase)', function () {
+    const fname   = 'fixtures/defaults.js'
     const code    = fs.readFileSync(fname, 'utf8')
     const promise = cleanup({ sourcemap: false }).transform(code, fname)
-    expect(promise).toBeTruthy()
+    expect(promise).toBeA(Promise)
 
-    return promise.then(result => {
-      expect(result.map).toBeFalsy()
+    return promise.then((result) => {
+      expect(result.map).toNotExist()
     })
   })
 

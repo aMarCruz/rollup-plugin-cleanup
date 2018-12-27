@@ -10,10 +10,11 @@
     "node": ">=6.14"
   },
   "scripts": {
-    "test": "jest",
+    "test": "nyc mocha",
     "pretest": "rollup -c",
-    "lint": "eslint src/*.js",
+    "lint": "eslint src/*.js test/*.js",
     "clean": "rimraf ./dist/** ./coverage/**",
+    "coverage": "nyc report -r=lcov",
     "build": "npm run lint && rimraf ./dist/** && npm test",
     "prepublish": "npm run build"
   },
@@ -51,7 +52,9 @@
   },
   "devDependencies": {
     "eslint": "^5.11.0",
-    "jest": "^22.4.3",
+    "expect": "1.20.2",
+    "mocha": "^5.2.0",
+    "nyc": "^13.1.0",
     "rimraf": "^2.6.2",
     "rollup": "^0.68.2",
     "rollup-plugin-buble": "^0.19.6",

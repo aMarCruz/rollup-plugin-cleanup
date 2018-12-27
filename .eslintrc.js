@@ -143,18 +143,16 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['**/__test__/**'],
+      files: ['**/test/**'],
       env: {
-        jest: true,
+        mocha: YES,
       },
       rules: {
-        'arrow-parens': OFF,
-        'brace-style': [ON, '1tbs', { allowSingleLine: true }],
         'max-len': OFF,
         'max-lines': OFF,
         'max-nested-callbacks': [ON, 4],
-        'no-console': OFF,
-        'no-debugger': OFF,
+        'no-console': WARN,
+        'no-debugger': WARN,
       },
     },
   ],
