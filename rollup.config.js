@@ -2,35 +2,32 @@
   Rollup config.
   With node v6.x the bublé plugin is not necessary.
 */
-const external = Object
-  .keys(require('./package.json').dependencies)
-  .concat('fs', 'path')
-
-const banner = [
-  '/**',
-  ' * rollup-plugin-cleanup v' + require('./package.json').version,
-  ' * @author aMarCruz',
-  ' * @license MIT',
-  ' */',
-].join('\n')
+const pkg = require('./package.json')
+const banner = `/**
+ * rollup-plugin-cleanup v${pkg.version}
+ * @author aMarCruz
+ * @license MIT
+ */
+/*eslint-disable*/`
 
 export default {
   input: 'src/index.js',
-  plugins: [
-  ],
-  external,
+  plugins: [],
+  external: Object.keys(pkg.dependencies),
   output: [
     {
-      file: 'dist/rollup-plugin-cleanup.js',
+      file: pkg.main,
       format: 'cjs',
       banner,
       interop: false,
+      sourcemap: true,
     },
     {
-      file: 'dist/rollup-plugin-cleanup.es.js',
+      file: pkg.module,
       format: 'es',
       banner,
       interop: false,
+      sourcemap: true,
     },
   ],
 }

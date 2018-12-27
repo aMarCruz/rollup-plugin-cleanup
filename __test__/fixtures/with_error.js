@@ -1,2 +1,2 @@
-var x = ;
+var x = "';
 foo;

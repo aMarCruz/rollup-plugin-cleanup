@@ -1,6 +1,10 @@
 
 import { createFilter } from 'rollup-pluginutils'
-import { extname } from 'path'
+
+const justExt = (file) => {
+  const match = /[^/\\]\.([^./\\]*)$/.exec(file)
+  return match ? match[1] : ''
+}
 
 /**
  * Creates a filter for the options `include`, `exclude`, and `extensions`.
@@ -10,23 +14,28 @@ import { extname } from 'path'
  * @returns {function}     Filter function that returns true if a given
  *                         file matches the filter.
  */
-export default function _createFilter(opts) {
+const _createFilter = function (opts) {
 
-  const filt = createFilter(opts.include, opts.exclude)
+  const filter = createFilter(opts.include, opts.exclude)
 
-  let exts = opts.extensions || ['.js', '.jsx']
-  if (!Array.isArray(exts)) exts = [exts]
+  let exts = opts.extensions || ['js', 'jsx']
+  if (!Array.isArray(exts)) {
+    exts = [exts]
+  }
+
   for (let i = 0; i < exts.length; i++) {
     const e = exts[i]
     if (e === '*') {
-      exts = '*'
-      break
-    } else if (e[0] !== '.') {
-      exts[i] = '.' + e
+      return filter
+    }
+    if (e[0] === '.') {
+      exts[i] = e.substr(1)
     }
   }
 
   return function (name) {
-    return filt(name) && (exts === '*' || exts.indexOf(extname(name)) > -1)
+    return filter(name) && exts.indexOf(justExt(name)) > -1
   }
 }
+
+export default _createFilter

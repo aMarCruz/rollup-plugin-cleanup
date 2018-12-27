@@ -1,14 +1,14 @@
+import cleanup from 'js-cleanup'
 import createFilter from './create-filter'
 import parseOptions from './parse-options'
-import cleanup from './cleanup'
 
 /**
  * Returns the rollup-plugin-cleanup instance.
  * @param   {Object} options - Plugin's user options
  * @returns {Object} Plugin instance.
  */
-export default function rollupCleanup(options) {
-  if (!options) options = {}
+const rollupCleanup = function (options) {
+  options = options || {}
 
   // merge include, exclude, and extensions
   const filter = createFilter(options)
@@ -24,19 +24,23 @@ export default function rollupCleanup(options) {
     transform(code, id) {
 
       if (filter(id)) {
-
-        return cleanup(code, id, options)
-          .catch(err => {
-            if (typeof this.error == 'function') {
-              this.error(err)
+        return new Promise((resolve) => {
+          try {
+            resolve(cleanup(code, id, options))
+          } catch (err) {
+            // istanbul ignore else
+            if ('position' in err && this.error) {
+              this.error(err.message, err.position)
             } else {
-              throw new Error(err)
+              throw err
             }
-          })
-
+          }
+        })
       }
 
       return null
     },
   }
 }
+
+export default rollupCleanup

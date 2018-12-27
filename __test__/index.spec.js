@@ -7,7 +7,6 @@ const fs      = require('fs')
 
 process.chdir(__dirname)
 
-
 function concat(name, subdir) {
   let file = path.join(__dirname, subdir || 'expected', name)
 
@@ -19,13 +18,15 @@ function concat(name, subdir) {
   return file
 }
 
-
 function testLines(code, expected, lines) {
   const options = { comments: 'all', functions: false, debuggerStatements: false }
 
   if (lines != null) {
-    if (typeof lines == 'object') Object.assign(options, lines)
-    else options.maxEmptyLines = lines
+    if (typeof lines == 'object') {
+      Object.assign(options, lines)
+    } else {
+      options.maxEmptyLines = lines
+    }
   }
 
   const promise = cleanup(options).transform(code, 'test.js')
@@ -36,8 +37,7 @@ function testLines(code, expected, lines) {
   })
 }
 
-
-function testFile(file, opts, save, fexp) {
+function testFile(file, opts, fexp, save) { // eslint-disable-line max-params
   const fname     = concat(file, 'fixtures')
   const expected  = fexp === null ? null : fs.readFileSync(concat(fexp || file), 'utf8')
   const code      = fs.readFileSync(fname, 'utf8')
@@ -56,7 +56,6 @@ function testFile(file, opts, save, fexp) {
   })
 }
 
-
 // ===========================================================================
 
 describe('rollup-plugin-cleanup', function () {
@@ -66,7 +65,6 @@ describe('rollup-plugin-cleanup', function () {
   const emptyLinesBottom = 'X' + emptyLines10
   const emptyLinesMiddle = emptyLines10 + 'X' + emptyLines10 + 'X' + emptyLines10
   const emptyLinesTemplate = emptyLines10 + '`' + emptyLines10 + '`' + emptyLines10
-
 
   test('by default removes all the empty lines and normalize to unix', function () {
     return testLines([
@@ -79,11 +77,9 @@ describe('rollup-plugin-cleanup', function () {
     ].join('\n'), 'abc\nx\ny\nz')
   })
 
-
   test('do not touch current indentation of non-empty lines', function () {
     return testLines('  \n X\n  X ', ' X\n  X')
   })
-
 
   test('has fine support for empty lines with `maxEmptyLines`', function () {
     const promises = [
@@ -104,16 +100,14 @@ describe('rollup-plugin-cleanup', function () {
     return Promise.all(promises)
   })
 
-
   test('can keep all the lines by setting `maxEmptyLines` = -1', function () {
     return Promise.all([
-      testLines(emptyLinesTop, null, -1),
-      testLines(emptyLinesBottom, null, -1),
-      testLines(emptyLinesMiddle, null, -1),
-      testLines(emptyLinesTemplate, null, -1),
+      testLines(emptyLinesTop, emptyLinesTop, -1),
+      testLines(emptyLinesBottom, emptyLinesBottom, -1),
+      testLines(emptyLinesMiddle, emptyLinesMiddle, -1),
+      testLines(emptyLinesTemplate, emptyLinesTemplate, -1),
     ])
   })
-
 
   test('can convert to Windows line-endings with `normalizeEols` = "win"', function () {
     const opts = { maxEmptyLines: 1, normalizeEols: 'win' }
@@ -125,7 +119,6 @@ describe('rollup-plugin-cleanup', function () {
     ])
   })
 
-
   test('and convertion to Mac line-endings with `normalizeEols` = "mac"', function () {
     const opts = { maxEmptyLines: 1, normalizeEols: 'mac' }
     return Promise.all([
@@ -136,25 +129,14 @@ describe('rollup-plugin-cleanup', function () {
     ])
   })
 
-
   test('makes normalization to the desired `normalizeEols` line-endings', function () {
     const opts = { maxEmptyLines: -1, normalizeEols: 'mac' }
     return testLines('\r\n \n\r \r\r\n \r\r \n', '\r\r\r\r\r\r\r\r', opts)
   })
 
-
   test('handles ES7', function () {
     return testFile('es7')
   })
-
-
-  test('throws on Acorn errors', function () {
-    const fname = concat('with_error', 'fixtures')
-    const code  = fs.readFileSync(fname, 'utf8')
-
-    return expect(cleanup().transform(code, fname)).rejects.toBeDefined()
-  })
-
 
   test('throws with the rollup `this.error` method.', function () {
     const opts = {
@@ -162,9 +144,10 @@ describe('rollup-plugin-cleanup', function () {
       plugins: [cleanup()],
     }
 
-    expect.assertions(1)
+    expect.assertions(2)
     return rollup(opts).catch(err => {
       expect(err.code).toBe('PLUGIN_ERROR')
+      expect(err).toHaveProperty('loc')
     })
   })
 
@@ -179,44 +162,42 @@ describe('Removing comments', function () {
     })
   })
 
-
   test('with `comments: "none"`', function () {
-    return testFile('defaults', { comments: 'none' }, false, 'comments_none')
+    return testFile('defaults', { comments: 'none' }, 'comments_none')
   })
-
 
   test('with `comments: false`', function () {
-    return testFile('defaults', { comments: false }, false, 'comments_none')
+    return testFile('defaults', { comments: false }, 'comments_none')
   })
-
 
   test('with `comments: true`', function () {
-    return testFile('defaults', { comments: true }, false, 'comments_all')
+    return testFile('defaults', { comments: true }, 'comments_all')
   })
-
 
   test('with `comments: /@preserve/`', function () {
-    return testFile('defaults', { comments: /@preserve/ }, false, 'comments_regex')
+    return testFile('defaults', { comments: /@preserve/ }, 'comments_regex')
   })
-
 
   test('with long comments', function () {
     return testFile('long_comment')
   })
 
-
   test('with no changes due normalization nor emptyLines', function () {
     return testFile('comments')
   })
-
 
   test('with "ts3s" preserves TypeScript Triple-Slash directives.', function () {
     return testFile('ts3s', { comments: 'ts3s' })
   })
 
+  test('"srcmaps" is an alias to "sources"', function () {
+    const opts = { comments: 'srcmaps' }
+    const source = '//\n0\n//# sourceURL=a.map\n//# sourceMappingURL=a.js.map'
+    return testLines(source, source.substr(3), opts)
+  })
 
   test('throws on unknown filters', function () {
-    expect(() => { cleanup({ comments: 'foo' }) }).toThrow()
+    return expect(() => { cleanup({ comments: 'foo' }) }).toThrow('unknown')
   })
 
 })
@@ -230,24 +211,34 @@ describe('Extension handling', function () {
     })
   })
 
-
   test('with specific `extensions` must process given extensions', function () {
     return testFile('extensions.foo', {
       extensions: 'foo',
     })
   })
 
-
   test('must skip non listed extensions', function () {
-    return testFile('comments', { extensions: 'foo' }, false, null)
+    return testFile('comments', { extensions: 'foo' }, null)
+  })
+
+  test('must handle empty extensions', function () {
+    const opts = { extensions: '.', sourcemap: false }
+    const source = 'A'
+    expect(cleanup(opts).transform(source, 'a.ext')).toBe(null)
+
+    const promise = cleanup(opts).transform(source, 'no-ext')
+    expect(promise).toBeTruthy()
+    return promise.then(result => {
+      expect(result.code).toBe(source)
+    })
   })
 
 })
 
 
-describe('Support for post-procesing', function () {
+describe('Issues', function () {
 
-  test('of .jsx files (issue #1)', function () {
+  test('must handle .jsx files (issue #1)', function () {
     const jsx  = require('rollup-plugin-jsx')
     const opts = {
       input: 'fixtures/issue_1.jsx',
@@ -269,28 +260,12 @@ describe('Support for post-procesing', function () {
     )
   })
 
-})
-
-
-describe('ES2018 & Stage 3 support', function () {
-
-  test('spread operator in object (issue #10)', function () {
-    return testFile('issue_10', { ecmaVersion: 9 })
+  test('must support spread operator by default (issue #10)', function () {
+    return testFile('issue_10')
   })
 
-  test('import() support through acorn-dynamic-import', function () {
-    const acorn = require('acorn')
-    const acornOptions = {
-      plugins: {
-        dynamicImport: true,
-      },
-    }
-
-    // Inject the plugin into acorn.
-    // In production it is likely you use `import inject from "acorn-dynamic-import/lib/inject"`
-    require('acorn-dynamic-import/lib/inject').default(acorn)
-
-    return testFile('issue_11', { acornOptions })
+  test('must support import() by default (issue #11)', function () {
+    return testFile('issue_11')
   })
 
 })
@@ -298,12 +273,13 @@ describe('ES2018 & Stage 3 support', function () {
 
 describe('SourceMap support', function () {
 
+  const validator = require('sourcemap-validator')
   const buble = require('rollup-plugin-buble')
 
   test('bundle generated by rollup w/inlined sourcemap', function () {
 
     return rollup({
-      input: concat('bundle-src.js', 'maps'),
+      input: 'maps/bundle-src.js',
       plugins: [
         buble(),
         cleanup({
@@ -321,30 +297,18 @@ describe('SourceMap support', function () {
         banner: '/*\n plugin version 1.0\n*/',
         footer: '/* follow me on Twitter! @amarcruz */',
       }).then(result => {
-        result.map.sources = null // MagicString is storing absolute paths!
-        const map = result.map.toString()
-        const code = result.code + '\n//# source' + 'MappingURL=bundle.js.map'
-        let expected
+        const code = result.code
+        const expected = fs.readFileSync(concat('bundle.js', 'maps'), 'utf8')
 
-        /*
-          If you modified the source in maps/bundle-src.js, you
-          need to write the bundle and test it in the browser again.
-        */
-        //console.log('\t--- writing bundle with inlined sourceMap...')
-        //fs.writeFileSync(concat('bundle.js', 'maps'), code, 'utf8')
-        //fs.writeFileSync(concat('bundle.js.map', 'maps'), map, 'utf8')
-
-        expected = fs.readFileSync(concat('bundle.js', 'maps'), 'utf8')
-        expect(code).toBe(expected, 'Genereted code is incorrect!')
-
-        expected = fs.readFileSync(concat('bundle.js.map', 'maps'), 'utf8')
-        expect(map).toBe(expected, 'Genereted map is incorrect!')
+        expect(code + '\n//# sourceMappingURL=bundle.js.map').toBe(expected, 'Genereted code is incorrect!')
+        expect(result.map).toBeTruthy()
+        validator(code, JSON.stringify(result.map))
       })
 
     })
   })
 
-  test('skip source map generation with `sourceMap: false`', function () {
+  test('must skip sourcemap generation with `sourceMap: false`', function () {
     const fname   = concat('defaults', 'fixtures')
     const code    = fs.readFileSync(fname, 'utf8')
     const promise = cleanup({ sourceMap: false }).transform(code, fname)
@@ -355,8 +319,7 @@ describe('SourceMap support', function () {
     })
   })
 
-
-  test('skip source map generation with `sourcemap: false` (lowercase)', function () {
+  test('must skip sourcemap generation with `sourcemap: false` (lowercase)', function () {
     const fname   = concat('defaults', 'fixtures')
     const code    = fs.readFileSync(fname, 'utf8')
     const promise = cleanup({ sourcemap: false }).transform(code, fname)

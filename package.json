@@ -1,23 +1,25 @@
 {
   "name": "rollup-plugin-cleanup",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Rollup plugin to trim trailing spaces, compact empty lines, and normalize line endings",
   "main": "dist/rollup-plugin-cleanup.js",
   "module": "dist/rollup-plugin-cleanup.es.js",
   "jsnext:main": "dist/rollup-plugin-cleanup.es.js",
+  "source": "src/index.js",
   "engines": {
     "node": ">=6.14"
   },
   "scripts": {
     "test": "jest",
     "pretest": "rollup -c",
-    "lint": "eslint src",
-    "build": "npm run lint && rm -rf dist/* && npm test",
+    "lint": "eslint src/*.js",
+    "clean": "rimraf ./dist/** ./coverage/**",
+    "build": "npm run lint && rimraf ./dist/** && npm test",
     "prepublish": "npm run build"
   },
   "files": [
-    "dist",
-    "src"
+    "index.d.ts",
+    "dist"
   ],
   "repository": {
     "type": "git",
@@ -27,9 +29,10 @@
     "rollup",
     "rollup-plugin",
     "javascript",
-    "es2015",
     "es6",
     "modules",
+    "comments",
+    "removal",
     "cleanup"
   ],
   "author": {
@@ -43,17 +46,17 @@
   },
   "homepage": "https://github.com/aMarCruz/rollup-plugin-cleanup",
   "dependencies": {
-    "acorn": "^5.7.1",
-    "magic-string": "^0.25.0",
+    "js-cleanup": "^1.0.0",
     "rollup-pluginutils": "^2.3.0"
   },
   "devDependencies": {
-    "acorn-dynamic-import": "^3.0.0",
-    "eslint": "^5.0.1",
+    "eslint": "^5.11.0",
     "jest": "^22.4.3",
-    "rollup": "^0.58.2",
-    "rollup-plugin-buble": "^0.19.2",
-    "rollup-plugin-jsx": "^1.0.3"
+    "rimraf": "^2.6.2",
+    "rollup": "^0.68.2",
+    "rollup-plugin-buble": "^0.19.6",
+    "rollup-plugin-jsx": "^1.0.3",
+    "sourcemap-validator": "^1.1.0"
   },
   "peerDependencies": {
     "rollup": ">=0.50.0"

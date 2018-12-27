@@ -1,10 +1,24 @@
+# Send coverage report from node 6 builds of any branch
 
-MAKECC = $(TRAVIS_BRANCH) $(TRAVIS_NODE_VERSION)
+CURBUILD = "$(TRAVIS_NODE_VERSION)"
+REQBUILD = "6.14.0"
 
-sendcover:
-ifeq ($(MAKECC),master 6.14)
-	@ npm install -g codeclimate-test-reporter
-	@ codeclimate-test-reporter < coverage/lcov.info
+setup_cover:
+ifeq ($(CURBUILD),$(REQBUILD))
+	@ npm i -g codecov
+	@ curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+	@ chmod +x ./cc-test-reporter
+	@ ./cc-test-reporter before-build
 endif
 
-.PHONY: sendcover
+send_cover:
+ifeq ($(CURBUILD),$(REQBUILD))
+	@ echo Sending coverage report...
+	@ codecov -f ./coverage/lcov.info
+	@ ./cc-test-reporter after-build --exit-code $(TRAVIS_TEST_RESULT)
+	@ echo The report was sent.
+else
+	@ echo The coverage report will be sent in $(REQBUILD)
+endif
+
+.PHONY: setup_cover send_cover

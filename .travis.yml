@@ -3,19 +3,22 @@ sudo: false
 language: node_js
 
 node_js:
-    - "9"
-    - "6.14"
+    - "node"
+    - "6.14.0"
 
 branches:
     only:
         - master
         - dev
 
-after_success: make sendcover
+before_script:
+    - make setup_cover
+
+script:
+    - yarn test
+
+after_script:
+    - make send_cover
 
 notifications:
     email: false
-
-addons:
-    code_climate:
-        repo_token: c8ac7d4b83364b9c81e0417f6cee9db9aa965eeb7742a9b016dbd060d04275ea
