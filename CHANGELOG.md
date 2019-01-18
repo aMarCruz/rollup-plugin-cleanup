@@ -1,5 +1,15 @@
 # rollup-plugin-cleanup changes
 
+## \[3.1.1] - 2019-01-18
+
+### Changed
+
+- Update dependencies.
+
+### Fixed
+
+- #15 : Version 3.1.0 fails for certain template literals. Thanks to @stotter for repoting this issue.
+
 ## \[3.1.0] - 2018-12-27
 
 Bye, acorn.

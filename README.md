@@ -109,6 +109,10 @@ const cleanedCode = jsCleanup(code, null, { comments: ['eslint', /^\*-/] })
 
 ## What's New
 
+Changes in v3.1.1
+
+- Fixed #15: Version 3.1.0 fails for certain template literals. Thanks to @stotter for repoting this issue.
+
 Changes in v3.1.0
 
 Bye, acorn.

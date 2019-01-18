@@ -273,6 +273,28 @@ describe('Issues', function () {
     return testFile('issue_11')
   })
 
+  it('#15 must handle "$" ending the string', function () {
+    const opts = {
+      sourceMap: false,
+    }
+    /* eslint-disable no-template-curly-in-string */
+    const result = [
+      'const s = `${v}$`',
+      'const s = `$${v}$`',
+      'const s = `${v}$$`',
+      'const s = `\\$`',
+      'const s = `$0`',
+      'const s = `$$`',
+      'const s = `$`',
+    ].map(function (str) {
+      return cleanup(opts).transform(str, 'a.js').then((res) => {
+        expect(res.code).toBe(str)
+      })
+    })
+    /* eslint-enable no-template-curly-in-string */
+    return Promise.all(result)
+  })
+
 })
 
 
