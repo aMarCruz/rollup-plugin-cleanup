@@ -295,6 +295,23 @@ describe('Issues', function () {
     return Promise.all(result)
   })
 
+  it.only('must handle large libraries', function () {
+    const filename = 'issue_17.js'
+    return rollup({
+      input: concat(filename, 'fixtures'),
+      plugins: [
+        require('rollup-plugin-node-resolve')(),
+        require('rollup-plugin-commonjs')({ 'include': '../node_modules/**' }),
+        cleanup({ sourceMap: false }),
+      ],
+    }).then((bundle) => {
+      return bundle.generate({ format: 'iife' })
+    }).then((result) => {
+      const expected = fs.readFileSync('maps/output.js', 'utf8')
+      expect(result.code).toBe(expected, 'Generated code is incorrect!')
+    })
+  })
+
 })
 
 
@@ -325,7 +342,7 @@ describe('SourceMap support', function () {
         const code = result.code
         const expected = fs.readFileSync('maps/output.js', 'utf8')
 
-        expect(code).toBe(expected, 'Genereted code is incorrect!')
+        expect(code).toBe(expected, 'Generated code is incorrect!')
         expect(result.map).toBeAn(Object).toExist()
         validator(code, JSON.stringify(result.map))
       })

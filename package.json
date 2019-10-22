@@ -56,10 +56,13 @@
     "mocha": "^5.2.0",
     "nyc": "^13.1.0",
     "rimraf": "^2.6.2",
-    "rollup": "^0.68.2",
+    "rollup": "^1.25.1",
     "rollup-plugin-buble": "^0.19.6",
+    "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-jsx": "^1.0.3",
-    "sourcemap-validator": "^1.1.0"
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "sourcemap-validator": "^1.1.0",
+    "zxcvbn": "^4.4.2"
   },
   "peerDependencies": {
     "rollup": ">=0.50.0"
