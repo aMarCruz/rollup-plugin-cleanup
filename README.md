@@ -69,7 +69,7 @@ lineEndings     | `unix`   | Type of Line-ending for normalization: "unix", "mac
 sourcemap       | `true`   | Should a sourcemap be generated?
 include         | `''`     | [minimatch](https://github.com/isaacs/minimatch) or array of minimatch patterns for paths to include in the process.
 exclude         | `''`     | minimatch or array of minimatch patterns for paths to exclude of the process.
-extensions      | `['js', 'jsx', 'tag']` | String or array of strings with extensions of files to process.
+extensions      | `['js', 'mjs', 'jsx', 'tag']` | String or array of strings with extensions of files to process.
 
 ## Predefined Comment Filters
 

@@ -18,7 +18,7 @@ const _createFilter = function (opts) {
 
   const filter = createFilter(opts.include, opts.exclude)
 
-  let exts = opts.extensions || ['js', 'jsx']
+  let exts = opts.extensions || ['js', 'mjs', 'jsx']
   if (!Array.isArray(exts)) {
     exts = [exts]
   }
