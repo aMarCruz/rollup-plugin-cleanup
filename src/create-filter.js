@@ -18,7 +18,7 @@ const _createFilter = function (opts) {
 
   const filter = createFilter(opts.include, opts.exclude)
 
-  let exts = opts.extensions || ['js', 'jsx']
+  let exts = opts.extensions || ['js', 'jsx', 'mjs']
   if (!Array.isArray(exts)) {
     exts = [exts]
   }
@@ -33,9 +33,7 @@ const _createFilter = function (opts) {
     }
   }
 
-  return function (name) {
-    return filter(name) && exts.indexOf(justExt(name)) > -1
-  }
+  return (name) => (filter(name) && exts.indexOf(justExt(name)) > -1)
 }
 
 export default _createFilter

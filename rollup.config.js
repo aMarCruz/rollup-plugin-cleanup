@@ -2,7 +2,13 @@
   Rollup config.
   With node v6.x the bublé plugin is not necessary.
 */
-const pkg = require('./package.json')
+import pkg from './package.json'
+
+const external = require('module').builtinModules.concat(
+  Object.keys(pkg.dependencies),
+  Object.keys(pkg.devDependencies)
+)
+
 const banner = `/**
  * rollup-plugin-cleanup v${pkg.version}
  * @author aMarCruz
@@ -13,7 +19,7 @@ const banner = `/**
 export default {
   input: 'src/index.js',
   plugins: [],
-  external: Object.keys(pkg.dependencies),
+  external,
   output: [
     {
       file: pkg.main,
@@ -21,6 +27,8 @@ export default {
       banner,
       interop: false,
       sourcemap: true,
+      preferConst: true,
+      exports: 'auto',
     },
     {
       file: pkg.module,
@@ -28,6 +36,8 @@ export default {
       banner,
       interop: false,
       sourcemap: true,
+      preferConst: true,
+      exports: 'default',
     },
   ],
 }

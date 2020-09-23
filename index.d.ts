@@ -6,6 +6,8 @@ declare function cleanupPlugin (options?: cleanupPlugin.Options): import('rollup
 // tslint:disable-next-line:no-namespace
 declare namespace cleanupPlugin {
 
+  type PicoMatchGlob = string | RegExp | Array<string | RegExp>
+
   interface Options {
     /**
      * Determinates which comments must be preserved.
@@ -38,18 +40,18 @@ declare namespace cleanupPlugin {
      */
     sourcemap?: boolean
     /**
-     * minimatch or array of minimatch patterns for paths to include in the process.
-     * @see https://github.com/isaacs/minimatch
+     * picomatch or array of picomatch patterns for paths to include in the process.
+     * @see https://github.com/micromatch/picomatch#globbing-features
      */
-    include?: string | string[]
+    include?: PicoMatchGlob
     /**
-     * minimatch or array of minimatch patterns for paths to exclude of the process.
-     * @see https://github.com/isaacs/minimatch
+     * picomatch or array of picomatch patterns for paths to include in the process.
+     * @see https://github.com/micromatch/picomatch#globbing-features
      */
-    exclude?: string | string[]
+    exclude?: PicoMatchGlob
     /**
      * String or array of strings with extensions of files to process.
-     * @default ['js','jsx','tag']
+     * @default ['js','jsx','mjs']
      */
     extensions?: string | string[]
   }

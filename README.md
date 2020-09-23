@@ -20,20 +20,32 @@ With the rollup-plugin-cleanup you have:
 
 From v3.1, this plugin no longer uses acorn. See more in the [Whats New](#whats-new) section.
 
+rollup-plugin-cleanup requires node v10.13 or above, but **avoid the buggy v11.x**
+
 **Important:**
 
-rollup-plugin-cleanup is based on [js-cleanup](https://github.com/aMarCruz/js-cleanup) and can handle any JS-like file: TypeScript, Flow, React, ES9, etc, but it is mainly a postprocessor, so it should be runned in a later stage of your toolchain, after any preprocessor or transpiler.
+rollup-plugin-cleanup is based on [js-cleanup](https://github.com/aMarCruz/js-cleanup) and can handle any JS-like file: TypeScript, Flow, React, ES9, etc, but it is mainly a _postprocessor_, so it should be runned in a later stage of your toolchain, after any preprocessor or transpiler.
 
 **Why not Uglify?**
 
 Uglify is a excelent _minifier_ but you have little control over the results, while with js-cleanup your coding style remains intact and the removal of comments is strictly under your control.
 
+## Support my Work
+
+I'm a full-stack developer with more than 20 year of experience and I try to share most of my work for free and help others, but this takes a significant amount of time and effort so, if you like my work, please consider...
+
+[<img src="https://amarcruz.github.io/images/kofi_blue.png" height="36" title="Support Me on Ko-fi" />][kofi-url]
+
+Of course, feedback, PRs, and stars are also welcome 🙃
+
+Thanks!
+
 ## Install
 
-```sh
-$ npm install rollup-plugin-cleanup --save-dev
+```bash
+npm install rollup-plugin-cleanup --save-dev
 # or with yarn
-$ yarn add rollup-plugin-cleanup -D
+yarn add rollup-plugin-cleanup -D
 ```
 
 ## Usage
@@ -60,16 +72,16 @@ By default, only the .js, .jsx, and .tag files are processed, but you can expand
 
 From v3.1.0 `normalizeEols` is deprecated in favor of `lineEndings` and the properties `ecmaVersion`, `sourceType`, and `acornOptions` are ignored. See more in [Whats New](#whats-new) section.
 
-Name            | Default  | Description
---------------- | -------- | -----------
-comments        | `'some'` | Filter or array of filters that determinates which comments should be preserved.<br>Use "all" to keep all, or "none" to remove all the comments.
-compactComments | `true`   | Should js-cleanup also compact whitespace and blank lines in the preserved multiline comments?<br>Line-ending normalization is always done.
-maxEmptyLines   | `0`      | Maximum successive empty lines to preserve in the output.<br>Use a positive value, or `-1` to keep all the lines.
-lineEndings     | `unix`   | Type of Line-ending for normalization: "unix", "mac", "win".
-sourcemap       | `true`   | Should a sourcemap be generated?
-include         | `''`     | [minimatch](https://github.com/isaacs/minimatch) or array of minimatch patterns for paths to include in the process.
-exclude         | `''`     | minimatch or array of minimatch patterns for paths to exclude of the process.
-extensions      | `['js', 'jsx', 'tag']` | String or array of strings with extensions of files to process.
+| Name            | Default  | Description |
+|-----------------|----------|-------------|
+| comments        | `'some'` | Filter or array of filters that determinates which comments should be preserved.<br>Use "all" to keep all, or "none" to remove all the comments. |
+| compactComments | `true`   | Should js-cleanup also compact whitespace and blank lines in the preserved multiline comments?<br>Line-ending normalization is always done. |
+| lineEndings     | `unix`   | Type of Line-ending for normalization: "unix", "mac", "win". |
+| maxEmptyLines   | `0`      | Maximum successive empty lines to preserve in the output.<br>Use a positive value, or `-1` to keep all the lines. |
+| sourcemap       | `true`   | Should a sourcemap be generated? |
+| extensions      | `['js', 'jsx', 'mjs']` | String or array of strings with extensions of files to process. |
+| exclude         | (none)   | [picomatch](https://github.com/micromatch/picomatch#globbing-features) or array of picomatch patterns for paths to exclude of the process. |
+| include         | (none)   | [picomatch](https://github.com/micromatch/picomatch#globbing-features) or array of picomatch patterns for paths to include in the process. |
 
 ## Predefined Comment Filters
 
@@ -109,47 +121,12 @@ const cleanedCode = jsCleanup(code, null, { comments: ['eslint', /^\*-/] })
 
 ## What's New
 
-Changes in v3.1.1
+Changes in v3.2.0
 
-- Fixed #15: Version 3.1.0 fails for certain template literals. Thanks to @stotter for repoting this issue.
-
-Changes in v3.1.0
-
-Bye, acorn.
-
-Although [acorn](https://github.com/acornjs/acorn) is an excellent parser, its use in rollup-plugin-cleanup had caused several issues.
-
-v3.1 removes this dependency and now is completely based on [js-cleanup](https://github.com/aMarCruz/js-cleanup), which does not depend on acorn or another similar parser, with the advantage of a relative independency of the version and "dialect" of JavaScript and a little more efficiency, for being a specialized tool.
-
-While js-cleanup is in its first version, I do not expect it to present major problems (the algorithm and the JS rules used for the replacement are fairly simple).
-
-- Added the `compactComment` option to control the compaction of multiline comments, useful to preserve the format of JSDoc blocks.
-- The options `ecmaVersion`, `sourceType`, and `acornOptions` are ignored, acorn was removed in this version.
-- The `normalizeEols` option is deprecated in favor of `lineEndings`, which have the same behavior.
-- The `some` filter no longer includes `@cc_on`, but adds comments that begin with `'!'`.
-- The `jscs` filter is deprecated, jscs no longer exists.
-- Added the `flow` filter for Facebook Flow comments and directives.
-- Added the `ts` filter for MS TypeScript directives.
-
-From v3.0, the minimum supported node version is now 6.14, the oldest maintained LTS version, which includes security fixes and is also supported by ESLint 5.
-
-None of this changes should break your apps, the deprecated features will be handled silently in this version, output a warning in next minor version, and removed in the next major release.
-
-The [conditional compilation](https://docs.microsoft.com/es-es/previous-versions/windows/internet-explorer/ie-developer/scripting-articles/121hztk3(v=vs.84)), used by JScript in oldest non-standard IE mode, can be supported by `/^\*@/`, but if you really need conditional code, take a look to [this plugin](https://github.com/aMarCruz/rollup-plugin-jscc).
-
-## TODO
-
-- [ ] Refactoring Tests
-
-## Support my Work
-
-I'm a full-stack developer with more than 20 year of experience and I try to share most of my work for free and help others, but this takes a significant amount of time and effort so, if you like my work, please consider...
-
-[<img src="https://amarcruz.github.io/images/kofi_blue.png" height="36" title="Support Me on Ko-fi" />][kofi-url]
-
-Of course, feedback, PRs, and stars are also welcome 🙃
-
-Thanks for your support!
+- Fixed #16 ? Thanks to @Aqours, @gevalo1 & @xania for repoting this issue
+- Using js-cleanup v1.2.0 and Rollup v2.0+
+- Requires NodeJS v10.13 or v12.0 and above
+- Updated dependencies
 
 ## License
 

@@ -15,8 +15,7 @@ var myapp = (function () {
   /*!
     Main
   */
-  function jspp (options) {
-    if ( options === void 0 ) options = {};
+  function jspp () {
     var filter = function (id) { return id || __TEST; };
     return {
       name: 'jspp',
@@ -27,7 +26,7 @@ var myapp = (function () {
         if (!filter(id)) {
           return null
         }
-        return postproc(preproc(code, options))
+        return postproc(preproc(code))
       }
     }
   }

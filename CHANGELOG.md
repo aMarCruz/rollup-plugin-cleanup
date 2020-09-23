@@ -1,5 +1,14 @@
 # rollup-plugin-cleanup changes
 
+## \[3.2.0] - 2020-09-22
+
+### Changed
+
+- Fixed #16 ? Thanks to @Aqours, @gevalo1 & @xania for repoting this issue
+- Using js-cleanup v1.2.0 and Rollup v2.0 and above
+- Requires NodeJS v10.13 or v12.0 and above
+- Updated dependencies
+
 ## \[3.1.1] - 2019-01-18
 
 ### Changed

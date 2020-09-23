@@ -21,7 +21,7 @@ function postproc (code) {
 /*!
   Main
 */
-export default function jspp (options = {}) {
+export default function jspp () {
 
   const filter = id => id || __TEST
 
@@ -40,7 +40,7 @@ export default function jspp (options = {}) {
       if (!filter(id)) {
         return null
       }
-      return postproc(preproc(code, options))
+      return postproc(preproc(code))
     }
   }
 

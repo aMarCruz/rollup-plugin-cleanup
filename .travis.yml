@@ -4,7 +4,7 @@ language: node_js
 
 node_js:
     - "node"
-    - "6.14.0"
+    - "10.13.0"
 
 branches:
     only:

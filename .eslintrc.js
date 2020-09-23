@@ -151,7 +151,7 @@ module.exports = {
         'max-len': OFF,
         'max-lines': OFF,
         'max-nested-callbacks': [ON, 4],
-        'no-console': WARN,
+        'no-console': OFF,
         'no-debugger': WARN,
       },
     },
