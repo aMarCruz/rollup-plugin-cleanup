@@ -121,7 +121,7 @@ const cleanedCode = jsCleanup(code, null, { comments: ['eslint', /^\*-/] })
 
 ## What's New
 
-Changes in v3.2.0
+Changes in v3.2.1
 
 - Fixed #16 ? Thanks to @Aqours, @gevalo1 & @xania for repoting this issue
 - Using js-cleanup v1.2.0 and Rollup v2.0+
