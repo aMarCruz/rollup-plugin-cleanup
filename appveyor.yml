@@ -11,7 +11,7 @@ init:
 environment:
   matrix:
   # node.js
-  - nodejs_version: "10.13"
+  - nodejs_version: "10.14.2"
   - nodejs_version: "12"
 
 matrix:

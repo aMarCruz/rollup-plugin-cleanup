@@ -6,7 +6,7 @@
 
 - Fixed #16 ? Thanks to @Aqours, @gevalo1 & @xania for repoting this issue
 - Using js-cleanup v1.2.0 and Rollup v2.0 and above
-- Requires NodeJS v10.13 or v12.0 and above
+- Requires NodeJS v10.14.2 or v12.0 and above
 - Updated dependencies
 
 ## \[3.1.1] - 2019-01-18
