@@ -130,11 +130,13 @@ Changes in v3.2.0
 
 ## License
 
-The [MIT License](LICENCE) (MIT)
+The [MIT License][license-url] (MIT)
+
+&copy; 2018-2020 Alberto Martínez
 
 [npm-badge]:      https://badgen.net/npm/v/rollup-plugin-cleanup
 [npm-url]:        https://www.npmjs.com/package/rollup-plugin-cleanup
-[license-badge]:  https://badgen.net/github/license/aMarCruz/rollup-plugin-cleanup/blue
+[license-badge]:  https://img.shields.io/badge/license-MIT-blue.svg?style=flat
 [license-url]:    https://github.com/aMarCruz/rollup-plugin-cleanup/blob/master/LICENSE
 [appveyor-badge]: https://ci.appveyor.com/api/projects/status/vuy62d6cbo1uo0be?svg=true
 [appveyor-url]:   https://ci.appveyor.com/project/aMarCruz/rollup-plugin-cleanup
