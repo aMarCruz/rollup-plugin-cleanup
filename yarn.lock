@@ -1405,9 +1405,10 @@ iterate-value@^1.0.0:
     es-get-iterator "^1.0.2"
     iterate-iterator "^1.0.1"
 
-"js-cleanup@file:./js-cleanup-1.2.2.tgz":
-  version "1.2.2"
-  resolved "file:./js-cleanup-1.2.2.tgz#2d20d4b623d1b9354e167208f4ee0a04aede29c8"
+js-cleanup@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/js-cleanup/-/js-cleanup-1.2.0.tgz#8dbc65954b1d38b255f1e8cf02cd17b3f7a053f9"
+  integrity sha512-JeDD0yiiSt80fXzAVa/crrS0JDPQljyBG/RpOtaSbyDq03VHa9szJWMaWOYU/bcTn412uMN2MxApXq8v79cUiQ==
   dependencies:
     magic-string "^0.25.7"
     perf-regexes "^1.0.1"
