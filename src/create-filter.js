@@ -19,7 +19,9 @@ const _createFilter = function (opts) {
   const filter = createFilter(opts.include, opts.exclude)
 
   let exts = opts.extensions || ['js', 'jsx', 'mjs']
-  if (!Array.isArray(exts)) {
+  if (Array.isArray(exts)) {
+    exts = Array.from(exts)
+  } else {
     exts = [exts]
   }
 
